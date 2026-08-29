@@ -1,0 +1,107 @@
+{
+  "schema": 1,
+  "policy": "policies/ssn-redact.json",
+  "tags": [
+    "regex",
+    "ssn",
+    "negative"
+  ],
+  "cases": [
+    {
+      "id": "ssn/negative-wrong-group-widths",
+      "text": "the ssn is 123 454 6789.",
+      "expect": {
+        "spans": [],
+        "filtered_text": "the ssn is 123 454 6789."
+      },
+      "rationale": [
+        "A 3-3-4 grouping is not an SSN shape and must not match."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "ssn/negative-letter-in-group",
+      "text": "the ssn is 123 4f 6789.",
+      "expect": {
+        "spans": [],
+        "filtered_text": "the ssn is 123 4f 6789."
+      },
+      "rationale": [
+        "A letter inside the number rules it out."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "ssn/negative-too-short",
+      "text": "SSN 123-45-678",
+      "expect": {
+        "spans": [],
+        "filtered_text": "SSN 123-45-678"
+      },
+      "rationale": [
+        "Eight digits is not an SSN. Guards the digit counts in the pattern."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "ssn/negative-invalid-area-000",
+      "text": "SSN 000-12-3456",
+      "expect": {
+        "spans": [],
+        "filtered_text": "SSN 000-12-3456"
+      },
+      "rationale": [
+        "Area 000 is never issued by the SSA, so it is rejected despite having the right shape."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "ssn/negative-invalid-area-666",
+      "text": "SSN 666-12-3456",
+      "expect": {
+        "spans": [],
+        "filtered_text": "SSN 666-12-3456"
+      },
+      "rationale": [
+        "Area 666 is never issued."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "ssn/negative-invalid-area-900",
+      "text": "SSN 900-12-3456",
+      "expect": {
+        "spans": [],
+        "filtered_text": "SSN 900-12-3456"
+      },
+      "rationale": [
+        "Areas 900 and above are never issued."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "ssn/negative-zero-group",
+      "text": "SSN 123-00-6789",
+      "expect": {
+        "spans": [],
+        "filtered_text": "SSN 123-00-6789"
+      },
+      "rationale": [
+        "A zero group number is never issued."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "ssn/negative-zero-serial",
+      "text": "SSN 123-45-0000",
+      "expect": {
+        "spans": [],
+        "filtered_text": "SSN 123-45-0000"
+      },
+      "rationale": [
+        "A zero serial number is never issued."
+      ],
+      "since": "0.1.0"
+    }
+  ]
+}

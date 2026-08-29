@@ -1,0 +1,105 @@
+{
+  "schema": 1,
+  "policy": "policies/ssn-redact.json",
+  "tags": [
+    "regex",
+    "ssn"
+  ],
+  "cases": [
+    {
+      "id": "ssn/hyphenated",
+      "text": "the ssn is 123-45-6789.",
+      "expect": {
+        "spans": [
+          {
+            "start": 11,
+            "end": 22,
+            "type": "ssn",
+            "text": "123-45-6789"
+          }
+        ],
+        "filtered_text": "the ssn is {{{REDACTED-ssn}}}."
+      },
+      "rationale": [
+        "The canonical hyphenated form."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "ssn/unpunctuated",
+      "text": "the ssn is 123456789.",
+      "expect": {
+        "spans": [
+          {
+            "start": 11,
+            "end": 20,
+            "type": "ssn",
+            "text": "123456789"
+          }
+        ],
+        "filtered_text": "the ssn is {{{REDACTED-ssn}}}."
+      },
+      "rationale": [
+        "Nine consecutive digits with no separators, as written in flat exports."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "ssn/space-separated",
+      "text": "the ssn is 123 45 6789.",
+      "expect": {
+        "spans": [
+          {
+            "start": 11,
+            "end": 22,
+            "type": "ssn",
+            "text": "123 45 6789"
+          }
+        ],
+        "filtered_text": "the ssn is {{{REDACTED-ssn}}}."
+      },
+      "rationale": [
+        "Spaces are an accepted separator, which matters for text extracted from PDFs where hyphens are lost."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "ssn/no-surrounding-keyword",
+      "text": "call 123-45-6789 now",
+      "expect": {
+        "spans": [
+          {
+            "start": 5,
+            "end": 16,
+            "type": "ssn",
+            "text": "123-45-6789"
+          }
+        ],
+        "filtered_text": "call {{{REDACTED-ssn}}} now"
+      },
+      "rationale": [
+        "Detection must not depend on the word 'ssn' appearing nearby; the number is the signal."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "ssn/nonstandard-grouping",
+      "text": "the ssn is 11-1234567.",
+      "expect": {
+        "spans": [
+          {
+            "start": 11,
+            "end": 21,
+            "type": "ssn",
+            "text": "11-1234567"
+          }
+        ],
+        "filtered_text": "the ssn is {{{REDACTED-ssn}}}."
+      },
+      "rationale": [
+        "A 2-7 grouping is still matched. Pinned because it is a deliberate loosening rather than an accident: mis-grouped SSNs occur in real records."
+      ],
+      "since": "0.1.0"
+    }
+  ]
+}

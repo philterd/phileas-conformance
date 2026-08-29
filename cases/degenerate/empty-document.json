@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "policy": "policies/ssn-redact.json",
+  "tags": [
+    "degenerate",
+    "integration"
+  ],
+  "cases": [
+    {
+      "id": "degenerate/empty-document",
+      "text": "",
+      "expect": {
+        "spans": [],
+        "filtered_text": ""
+      },
+      "rationale": [
+        "An empty document must return no spans and an empty string rather than throwing.",
+        "The classic crash case for a text pipeline, and cheap to guarantee.",
+        "filtered_text is asserted explicitly so an implementation returning null instead of an empty string fails here rather than somewhere downstream."
+      ],
+      "since": "0.1.0"
+    }
+  ]
+}

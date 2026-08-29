@@ -1,0 +1,12 @@
+{
+  "name": "iban-code-redact",
+  "identifiers": {
+    "ibanCode": {
+      "ibanCodeFilterStrategies": [
+        {
+          "strategy": "REDACT"
+        }
+      ]
+    }
+  }
+}

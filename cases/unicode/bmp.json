@@ -1,0 +1,68 @@
+{
+  "schema": 1,
+  "policy": "policies/ssn-redact.json",
+  "tags": [
+    "unicode",
+    "integration"
+  ],
+  "cases": [
+    {
+      "id": "unicode/latin-accents",
+      "text": "Patiënt SSN 123-45-6789 in Zürich",
+      "expect": {
+        "spans": [
+          {
+            "start": 12,
+            "end": 23,
+            "type": "ssn",
+            "text": "123-45-6789"
+          }
+        ],
+        "filtered_text": "Patiënt SSN {{{REDACTED-ssn}}} in Zürich"
+      },
+      "rationale": [
+        "Accented Latin characters before and after the value must not shift the offsets.",
+        "Every character here is in the Basic Multilingual Plane, where UTF-16 code units and Unicode codepoints agree, so the offsets are portable."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "unicode/cjk-surrounding-text",
+      "text": "患者のSSNは123-45-6789です",
+      "expect": {
+        "spans": [
+          {
+            "start": 7,
+            "end": 18,
+            "type": "ssn",
+            "text": "123-45-6789"
+          }
+        ],
+        "filtered_text": "患者のSSNは{{{REDACTED-ssn}}}です"
+      },
+      "rationale": [
+        "CJK text around the value. Each character is one UTF-16 unit and one codepoint, so offsets agree across implementations."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "unicode/mixed-accents-in-prose",
+      "text": "naïve café SSN 123-45-6789",
+      "expect": {
+        "spans": [
+          {
+            "start": 15,
+            "end": 26,
+            "type": "ssn",
+            "text": "123-45-6789"
+          }
+        ],
+        "filtered_text": "naïve café SSN {{{REDACTED-ssn}}}"
+      },
+      "rationale": [
+        "Several accented characters ahead of the value, so any per-character offset error accumulates."
+      ],
+      "since": "0.1.0"
+    }
+  ]
+}

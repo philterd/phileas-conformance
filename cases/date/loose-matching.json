@@ -1,0 +1,258 @@
+{
+  "schema": 1,
+  "policy": "policies/date-redact.json",
+  "tags": [
+    "regex",
+    "date"
+  ],
+  "cases": [
+    {
+      "id": "date/month-day-in-prose",
+      "text": "The good news is everywhere we go it is that way but this may 15 be on top of that.",
+      "expect": {
+        "spans": [
+          {
+            "start": 58,
+            "end": 64,
+            "type": "date",
+            "text": "may 15"
+          }
+        ],
+        "filtered_text": "The good news is everywhere we go it is that way but this {{{REDACTED-date}}} be on top of that."
+      },
+      "rationale": [
+        "A month and day inside ordinary prose, with no year."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "date/month-day-year-in-prose",
+      "text": "The good news is everywhere we go it is that way but this may 15, 2020 be on top of that.",
+      "expect": {
+        "spans": [
+          {
+            "start": 58,
+            "end": 70,
+            "type": "date",
+            "text": "may 15, 2020"
+          }
+        ],
+        "filtered_text": "The good news is everywhere we go it is that way but this {{{REDACTED-date}}} be on top of that."
+      },
+      "rationale": [
+        "The same with a four-digit year."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "date/month-day-year-no-comma-in-prose",
+      "text": "The good news is everywhere we go it is that way but this may 15 2020 be on top of that.",
+      "expect": {
+        "spans": [
+          {
+            "start": 58,
+            "end": 69,
+            "type": "date",
+            "text": "may 15 2020"
+          }
+        ],
+        "filtered_text": "The good news is everywhere we go it is that way but this {{{REDACTED-date}}} be on top of that."
+      },
+      "rationale": [
+        "The same with no comma."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "date/month-day-two-digit-year-in-prose",
+      "text": "The good news is everywhere we go it is that way but this may 15 19 be on top of that.",
+      "expect": {
+        "spans": [
+          {
+            "start": 58,
+            "end": 67,
+            "type": "date",
+            "text": "may 15 19"
+          }
+        ],
+        "filtered_text": "The good news is everywhere we go it is that way but this {{{REDACTED-date}}} be on top of that."
+      },
+      "rationale": [
+        "A two-digit year in prose."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "date/month-single-digit-day-two-digit-year",
+      "text": "The good news is everywhere we go it is that way but this may 5 19 be on top of that.",
+      "expect": {
+        "spans": [
+          {
+            "start": 58,
+            "end": 66,
+            "type": "date",
+            "text": "may 5 19"
+          }
+        ],
+        "filtered_text": "The good news is everywhere we go it is that way but this {{{REDACTED-date}}} be on top of that."
+      },
+      "rationale": [
+        "Single-digit day and two-digit year in prose."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "date/full-date-in-prose",
+      "text": "The good news is everywhere we go it is that way but this June 21, 2020 be on top of that.",
+      "expect": {
+        "spans": [
+          {
+            "start": 58,
+            "end": 71,
+            "type": "date",
+            "text": "June 21, 2020"
+          }
+        ],
+        "filtered_text": "The good news is everywhere we go it is that way but this {{{REDACTED-date}}} be on top of that."
+      },
+      "rationale": [
+        "A complete date inside a long sentence."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "date/two-digit-year-first",
+      "text": "13-06-31",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 8,
+            "type": "date",
+            "text": "13-06-31"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-date}}}"
+      },
+      "rationale": [
+        "A two-digit leading component. Pinned to record that the filter accepts it rather than requiring an unambiguous year position."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "date/four-digit-year-first-invalid-day",
+      "text": "2205-02-31",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 10,
+            "type": "date",
+            "text": "2205-02-31"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-date}}}"
+      },
+      "rationale": [
+        "2205-02-31 has an impossible day and a year far in the future, and is still matched.",
+        "Pinned as current behaviour, not as correct: date detection here is shape-based, not calendar-validated. For redaction that errs toward over-matching, which is the safer direction, but it is worth stating explicitly."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "date/impossible-day-four-digit-year",
+      "text": "02-31-2019",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 10,
+            "type": "date",
+            "text": "02-31-2019"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-date}}}"
+      },
+      "rationale": [
+        "02-31-2019 has no such day; shape matching accepts it."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "date/impossible-day-two-digit-year",
+      "text": "02-31-19",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 8,
+            "type": "date",
+            "text": "02-31-19"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-date}}}"
+      },
+      "rationale": [
+        "The same with a two-digit year."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "date/impossible-day-slash-form",
+      "text": "31/02/1980",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 10,
+            "type": "date",
+            "text": "31/02/1980"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-date}}}"
+      },
+      "rationale": [
+        "31/02/1980 has no such day; accepted for the same reason."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "date/date-with-time-suffix",
+      "text": "02-31-19@12:00",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 8,
+            "type": "date",
+            "text": "02-31-19"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-date}}}@12:00"
+      },
+      "rationale": [
+        "A date followed by @ and a time; the span covers only the date."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "date/impossible-month-with-time",
+      "text": "02-35-19@12:00",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 8,
+            "type": "date",
+            "text": "02-35-19"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-date}}}@12:00"
+      },
+      "rationale": [
+        "An impossible month with a time suffix, still matched."
+      ],
+      "since": "0.1.0"
+    }
+  ]
+}

@@ -1,0 +1,365 @@
+{
+  "schema": 1,
+  "policy": "policies/age-redact.json",
+  "tags": [
+    "regex",
+    "age"
+  ],
+  "cases": [
+    {
+      "id": "age/separator-colon",
+      "text": "Patient age: 55 presented today.",
+      "expect": {
+        "spans": [
+          {
+            "start": 8,
+            "end": 15,
+            "type": "age",
+            "text": "age: 55"
+          }
+        ]
+      },
+      "rationale": [
+        "'age:' with a colon separator is a common EHR field label, so it is age data and must be redacted.",
+        "No implementation detects it today: phileas accepts only whitespace between the keyword and the value. See philterd/phileas#332."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "age/separator-equals",
+      "text": "Patient age = 47 on admission.",
+      "expect": {
+        "spans": [
+          {
+            "start": 8,
+            "end": 16,
+            "type": "age",
+            "text": "age = 47"
+          }
+        ]
+      },
+      "rationale": [
+        "'age = 47' appears in exported tabular records.",
+        "No implementation detects it today, for the same reason as age/separator-colon. See philterd/phileas#332."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "age/labeled-colon-multiline",
+      "text": "Patient: Jane Doe\nAge: 47",
+      "expect": {
+        "spans": [
+          {
+            "start": 18,
+            "end": 25,
+            "type": "age",
+            "text": "Age: 47"
+          }
+        ],
+        "filtered_text": "Patient: Jane Doe\n{{{REDACTED-age}}}"
+      },
+      "rationale": [
+        "A labelled age on its own line of a structured record. The preceding line must not be absorbed into the span."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "age/labeled-newline-separator",
+      "text": "Patient: Jane Doe\nAge\n47",
+      "expect": {
+        "spans": [
+          {
+            "start": 18,
+            "end": 24,
+            "type": "age",
+            "text": "Age\n47"
+          }
+        ],
+        "filtered_text": "Patient: Jane Doe\n{{{REDACTED-age}}}"
+      },
+      "rationale": [
+        "The label separator is whitespace, so a line break between label and value still matches.",
+        "This is deliberate: structured records wrap the value onto the next line."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "age/label-with-years-value",
+      "text": "Admit age: 69 years",
+      "expect": {
+        "spans": [
+          {
+            "start": 11,
+            "end": 19,
+            "type": "age",
+            "text": "69 years"
+          }
+        ],
+        "filtered_text": "Admit age: {{{REDACTED-age}}}"
+      },
+      "rationale": [
+        "When both a label and a unit are present, the numeric-plus-unit match wins and the 'age:' label stays outside the span.",
+        "Worth pinning because the two patterns overlap here and the choice between them is not obvious."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "age/label-mixed-case-with-years",
+      "text": "Female Admit Age: 69 years",
+      "expect": {
+        "spans": [
+          {
+            "start": 18,
+            "end": 26,
+            "type": "age",
+            "text": "69 years"
+          }
+        ],
+        "filtered_text": "Female Admit Age: {{{REDACTED-age}}}"
+      },
+      "rationale": [
+        "Same overlap as the previous case with a capitalised label, confirming case insensitivity does not change which pattern wins."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "age/label-trailing-newline",
+      "text": "Female Admit Age: 69 years\n",
+      "expect": {
+        "spans": [
+          {
+            "start": 18,
+            "end": 26,
+            "type": "age",
+            "text": "69 years"
+          }
+        ],
+        "filtered_text": "Female Admit Age: {{{REDACTED-age}}}\n"
+      },
+      "rationale": [
+        "A trailing newline in the document must not extend the span."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "age/labeled-colon-space",
+      "text": "Age: 47",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 7,
+            "type": "age",
+            "text": "Age: 47"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-age}}}"
+      },
+      "rationale": [
+        "Label separator variant: colon followed by a space.",
+        "The whole string is one span, so the label is part of the redacted text rather than left behind."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "age/labeled-colon-nospace",
+      "text": "Age:47",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 6,
+            "type": "age",
+            "text": "Age:47"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-age}}}"
+      },
+      "rationale": [
+        "Label separator variant: colon with no space.",
+        "The whole string is one span, so the label is part of the redacted text rather than left behind."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "age/labeled-space-colon-space",
+      "text": "Age : 47",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 8,
+            "type": "age",
+            "text": "Age : 47"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-age}}}"
+      },
+      "rationale": [
+        "Label separator variant: space before and after the colon.",
+        "The whole string is one span, so the label is part of the redacted text rather than left behind."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "age/labeled-equals-space",
+      "text": "Age = 47",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 8,
+            "type": "age",
+            "text": "Age = 47"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-age}}}"
+      },
+      "rationale": [
+        "Label separator variant: equals sign.",
+        "The whole string is one span, so the label is part of the redacted text rather than left behind."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "age/labeled-equals-nospace",
+      "text": "Age=47",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 6,
+            "type": "age",
+            "text": "Age=47"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-age}}}"
+      },
+      "rationale": [
+        "Label separator variant: equals sign with no spaces.",
+        "The whole string is one span, so the label is part of the redacted text rather than left behind."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "age/labeled-hyphen-space",
+      "text": "Age - 47",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 8,
+            "type": "age",
+            "text": "Age - 47"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-age}}}"
+      },
+      "rationale": [
+        "Label separator variant: hyphen.",
+        "The whole string is one span, so the label is part of the redacted text rather than left behind."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "age/labeled-hyphen-nospace",
+      "text": "Age-47",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 6,
+            "type": "age",
+            "text": "Age-47"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-age}}}"
+      },
+      "rationale": [
+        "Label separator variant: hyphen with no spaces.",
+        "The whole string is one span, so the label is part of the redacted text rather than left behind."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "age/labeled-double-space",
+      "text": "Age  47",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 7,
+            "type": "age",
+            "text": "Age  47"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-age}}}"
+      },
+      "rationale": [
+        "Label separator variant: two spaces and no punctuation.",
+        "The whole string is one span, so the label is part of the redacted text rather than left behind."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "age/labeled-single-space",
+      "text": "Age 47",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 6,
+            "type": "age",
+            "text": "Age 47"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-age}}}"
+      },
+      "rationale": [
+        "Label separator variant: a single space and no punctuation.",
+        "The whole string is one span, so the label is part of the redacted text rather than left behind."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "age/labeled-aged-lowercase",
+      "text": "aged 47",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 7,
+            "type": "age",
+            "text": "aged 47"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-age}}}"
+      },
+      "rationale": [
+        "Label separator variant: the 'aged' variant, lowercase.",
+        "The whole string is one span, so the label is part of the redacted text rather than left behind."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "age/labeled-aged-colon",
+      "text": "Aged: 47",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 8,
+            "type": "age",
+            "text": "Aged: 47"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-age}}}"
+      },
+      "rationale": [
+        "Label separator variant: the 'aged' variant with a colon.",
+        "The whole string is one span, so the label is part of the redacted text rather than left behind."
+      ],
+      "since": "0.1.0"
+    }
+  ]
+}

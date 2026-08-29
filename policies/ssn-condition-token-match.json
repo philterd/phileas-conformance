@@ -1,0 +1,19 @@
+{
+  "name": "ssn-condition-token-match",
+  "identifiers": {
+    "ssn": {
+      "ssnFilterStrategies": [
+        {
+          "strategy": "STATIC_REPLACE",
+          "staticReplacement": "MATCHED",
+          "condition": "token == \"123-45-6789\""
+        },
+        {
+          "strategy": "MASK",
+          "maskCharacter": "*",
+          "maskLength": "same"
+        }
+      ]
+    }
+  }
+}

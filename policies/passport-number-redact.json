@@ -1,0 +1,12 @@
+{
+  "name": "passport-number-redact",
+  "identifiers": {
+    "passportNumber": {
+      "passportNumberFilterStrategies": [
+        {
+          "strategy": "REDACT"
+        }
+      ]
+    }
+  }
+}

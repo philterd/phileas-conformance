@@ -1,0 +1,16 @@
+{
+  "name": "ssn-fpe-encrypt",
+  "fpe": {
+    "key": "0123456789ABCDEF0123456789ABCDEF",
+    "tweak": "ABCDEF1234567890"
+  },
+  "identifiers": {
+    "ssn": {
+      "ssnFilterStrategies": [
+        {
+          "strategy": "FPE_ENCRYPT_REPLACE"
+        }
+      ]
+    }
+  }
+}

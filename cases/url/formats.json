@@ -1,0 +1,219 @@
+{
+  "schema": 1,
+  "policy": "policies/url-redact.json",
+  "tags": [
+    "regex",
+    "url"
+  ],
+  "cases": [
+    {
+      "id": "url/http-bare-host",
+      "text": "the page is http://page.com.",
+      "expect": {
+        "spans": [
+          {
+            "start": 12,
+            "end": 27,
+            "type": "url",
+            "text": "http://page.com"
+          }
+        ],
+        "filtered_text": "the page is {{{REDACTED-url}}}."
+      },
+      "rationale": [
+        "A bare http URL. The sentence period must stay outside the span."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "url/http-with-path",
+      "text": "the page is http://myhomepage.com/folder/page.html.",
+      "expect": {
+        "spans": [
+          {
+            "start": 12,
+            "end": 50,
+            "type": "url",
+            "text": "http://myhomepage.com/folder/page.html"
+          }
+        ],
+        "filtered_text": "the page is {{{REDACTED-url}}}."
+      },
+      "rationale": [
+        "A path with directories and a file name."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "url/http-www-with-path",
+      "text": "the page is http://www.myhomepage.com/folder/page.html",
+      "expect": {
+        "spans": [
+          {
+            "start": 12,
+            "end": 54,
+            "type": "url",
+            "text": "http://www.myhomepage.com/folder/page.html"
+          }
+        ],
+        "filtered_text": "the page is {{{REDACTED-url}}}"
+      },
+      "rationale": [
+        "A www host with a path."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "url/schemeless-www",
+      "text": "the page is www.myhomepage.com/folder/page.html.",
+      "expect": {
+        "spans": [
+          {
+            "start": 12,
+            "end": 47,
+            "type": "url",
+            "text": "www.myhomepage.com/folder/page.html"
+          }
+        ],
+        "filtered_text": "the page is {{{REDACTED-url}}}."
+      },
+      "rationale": [
+        "A schemeless www URL, which is how people write links in prose."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "url/schemeless-www-with-port",
+      "text": "the page is www.myhomepage.com:80/folder/page.html.",
+      "expect": {
+        "spans": [
+          {
+            "start": 12,
+            "end": 50,
+            "type": "url",
+            "text": "www.myhomepage.com:80/folder/page.html"
+          }
+        ],
+        "filtered_text": "the page is {{{REDACTED-url}}}."
+      },
+      "rationale": [
+        "A schemeless URL with an explicit port."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "url/http-ipv4-host-with-port",
+      "text": "the page is http://192.168.1.1:80/folder/page.html.",
+      "expect": {
+        "spans": [
+          {
+            "start": 12,
+            "end": 50,
+            "type": "url",
+            "text": "http://192.168.1.1:80/folder/page.html"
+          }
+        ],
+        "filtered_text": "the page is {{{REDACTED-url}}}."
+      },
+      "rationale": [
+        "An IPv4 host rather than a name, with a port."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "url/schemeless-ipv4-host",
+      "text": "the page is 192.168.1.1:80/folder/page.html.",
+      "expect": {
+        "spans": [
+          {
+            "start": 12,
+            "end": 43,
+            "type": "url",
+            "text": "192.168.1.1:80/folder/page.html"
+          }
+        ],
+        "filtered_text": "the page is {{{REDACTED-url}}}."
+      },
+      "rationale": [
+        "A schemeless IPv4 host with port and path."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "url/https-ipv4-host",
+      "text": "the page is https://192.168.1.1:80/folder/page.html.",
+      "expect": {
+        "spans": [
+          {
+            "start": 12,
+            "end": 51,
+            "type": "url",
+            "text": "https://192.168.1.1:80/folder/page.html"
+          }
+        ],
+        "filtered_text": "the page is {{{REDACTED-url}}}."
+      },
+      "rationale": [
+        "The https scheme with an IPv4 host."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "url/http-ipv6-host",
+      "text": "the page is http://2001:0db8:85a3:0000:0000:8a2e:0370:7334/test.html.",
+      "expect": {
+        "spans": [
+          {
+            "start": 12,
+            "end": 68,
+            "type": "url",
+            "text": "http://2001:0db8:85a3:0000:0000:8a2e:0370:7334/test.html"
+          }
+        ],
+        "filtered_text": "the page is {{{REDACTED-url}}}."
+      },
+      "rationale": [
+        "An IPv6 literal host, whose colons must not be read as a port separator."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "url/http-ipv6-host-trailing-slash",
+      "text": "the page is http://2001:0db8:85a3:0000:0000:8a2e:0370:7334/test/.",
+      "expect": {
+        "spans": [
+          {
+            "start": 12,
+            "end": 64,
+            "type": "url",
+            "text": "http://2001:0db8:85a3:0000:0000:8a2e:0370:7334/test/"
+          }
+        ],
+        "filtered_text": "the page is {{{REDACTED-url}}}."
+      },
+      "rationale": [
+        "An IPv6 host with a directory path ending in a slash."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "url/mid-sentence",
+      "text": "visit http://example.com now",
+      "expect": {
+        "spans": [
+          {
+            "start": 6,
+            "end": 24,
+            "type": "url",
+            "text": "http://example.com"
+          }
+        ],
+        "filtered_text": "visit {{{REDACTED-url}}} now"
+      },
+      "rationale": [
+        "A URL surrounded by words on both sides."
+      ],
+      "since": "0.1.0"
+    }
+  ]
+}

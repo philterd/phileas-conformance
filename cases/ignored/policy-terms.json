@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "policy": "policies/ssn-policy-ignored-term.json",
+  "tags": [
+    "ignored",
+    "policy"
+  ],
+  "cases": [
+    {
+      "id": "ignored/policy-level-term",
+      "text": "ssn 123-45-6789 and 555-55-1234",
+      "expect": {
+        "spans": [
+          {
+            "start": 20,
+            "end": 31,
+            "type": "ssn",
+            "text": "555-55-1234"
+          }
+        ],
+        "filtered_text": "ssn 123-45-6789 and {{{REDACTED-ssn}}}"
+      },
+      "rationale": [
+        "A term in the policy's top-level ignored list is detected but not applied, so it survives while the other value is redacted.",
+        "Policy-level ignore applies across filters, unlike the per-filter list."
+      ],
+      "since": "0.1.0"
+    }
+  ]
+}

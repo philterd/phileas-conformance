@@ -1,0 +1,6 @@
+{
+  "name": "ssn-last4",
+  "identifiers": {
+    "ssn": { "ssnFilterStrategies": [ { "strategy": "LAST_4" } ] }
+  }
+}

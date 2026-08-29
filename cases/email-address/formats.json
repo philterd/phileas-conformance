@@ -1,0 +1,371 @@
+{
+  "schema": 1,
+  "policy": "policies/email-address-redact.json",
+  "tags": [
+    "regex",
+    "email-address"
+  ],
+  "cases": [
+    {
+      "id": "email-address/simple",
+      "text": "my email is none@none.com.",
+      "expect": {
+        "spans": [
+          {
+            "start": 12,
+            "end": 25,
+            "type": "email-address",
+            "text": "none@none.com"
+          }
+        ],
+        "filtered_text": "my email is {{{REDACTED-email-address}}}."
+      },
+      "rationale": [
+        "The plainest form, with the sentence's trailing period outside the span."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "email-address/dotted-local-part",
+      "text": "firstname.lastname@example.com",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 30,
+            "type": "email-address",
+            "text": "firstname.lastname@example.com"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-email-address}}}"
+      },
+      "rationale": [
+        "A dot inside the local part is common and must not split the address."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "email-address/subdomain",
+      "text": "email@subdomain.example.com",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 27,
+            "type": "email-address",
+            "text": "email@subdomain.example.com"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-email-address}}}"
+      },
+      "rationale": [
+        "A multi-label domain."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "email-address/plus-addressing",
+      "text": "firstname+lastname@example.com",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 30,
+            "type": "email-address",
+            "text": "firstname+lastname@example.com"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-email-address}}}"
+      },
+      "rationale": [
+        "Plus addressing is widely used for per-service aliases; truncating at the + would leak the rest."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "email-address/ip-literal-domain",
+      "text": "email@123.123.123.123",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 21,
+            "type": "email-address",
+            "text": "email@123.123.123.123"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-email-address}}}"
+      },
+      "rationale": [
+        "A bare IPv4 domain rather than a hostname."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "email-address/bracketed-ip-domain",
+      "text": "email@[123.123.123.123]",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 23,
+            "type": "email-address",
+            "text": "email@[123.123.123.123]"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-email-address}}}"
+      },
+      "rationale": [
+        "The bracketed IP-literal form from RFC 5321."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "email-address/all-digit-local-part",
+      "text": "1234567890@example.com",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 22,
+            "type": "email-address",
+            "text": "1234567890@example.com"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-email-address}}}"
+      },
+      "rationale": [
+        "A purely numeric local part."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "email-address/hyphenated-domain",
+      "text": "email@example-one.com",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 21,
+            "type": "email-address",
+            "text": "email@example-one.com"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-email-address}}}"
+      },
+      "rationale": [
+        "Hyphens are legal inside a domain label."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "email-address/underscore-local-part",
+      "text": "_______@example.com",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 19,
+            "type": "email-address",
+            "text": "_______@example.com"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-email-address}}}"
+      },
+      "rationale": [
+        "Underscores are legal in the local part."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "email-address/name-tld",
+      "text": "email@example.name",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 18,
+            "type": "email-address",
+            "text": "email@example.name"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-email-address}}}"
+      },
+      "rationale": [
+        "A long TLD, to confirm TLD length is not capped at three."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "email-address/museum-tld",
+      "text": "email@example.museum",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 20,
+            "type": "email-address",
+            "text": "email@example.museum"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-email-address}}}"
+      },
+      "rationale": [
+        "A six-character TLD."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "email-address/two-level-tld",
+      "text": "email@example.co.jp",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 19,
+            "type": "email-address",
+            "text": "email@example.co.jp"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-email-address}}}"
+      },
+      "rationale": [
+        "A two-level public suffix."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "email-address/uncommon-tld",
+      "text": "email@example.web",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 17,
+            "type": "email-address",
+            "text": "email@example.web"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-email-address}}}"
+      },
+      "rationale": [
+        "An arbitrary TLD, since the filter must not carry a fixed TLD list."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "email-address/hyphenated-local-part",
+      "text": "firstname-lastname@example.com",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 30,
+            "type": "email-address",
+            "text": "firstname-lastname@example.com"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-email-address}}}"
+      },
+      "rationale": [
+        "Hyphens are legal in the local part too."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "email-address/unusual-tld-spelling",
+      "text": "my email is none@none.codfm.",
+      "expect": {
+        "spans": [
+          {
+            "start": 12,
+            "end": 27,
+            "type": "email-address",
+            "text": "none@none.codfm"
+          }
+        ],
+        "filtered_text": "my email is {{{REDACTED-email-address}}}."
+      },
+      "rationale": [
+        "A misspelled-looking TLD is still an address; the filter is not a deliverability check."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "email-address/trailing-label",
+      "text": "my email is none@none.com.dmf.",
+      "expect": {
+        "spans": [
+          {
+            "start": 12,
+            "end": 29,
+            "type": "email-address",
+            "text": "none@none.com.dmf"
+          }
+        ],
+        "filtered_text": "my email is {{{REDACTED-email-address}}}."
+      },
+      "rationale": [
+        "A further label after .com extends the domain rather than ending the span."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "email-address/three-letter-tld-variant",
+      "text": "my email is none@none.cob",
+      "expect": {
+        "spans": [
+          {
+            "start": 12,
+            "end": 25,
+            "type": "email-address",
+            "text": "none@none.cob"
+          }
+        ],
+        "filtered_text": "my email is {{{REDACTED-email-address}}}"
+      },
+      "rationale": [
+        "A TLD that is not on any common list."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "email-address/inside-display-name",
+      "text": "Joe Smith <email@example.com>",
+      "expect": {
+        "spans": [
+          {
+            "start": 11,
+            "end": 28,
+            "type": "email-address",
+            "text": "email@example.com"
+          }
+        ],
+        "filtered_text": "Joe Smith <{{{REDACTED-email-address}}}>"
+      },
+      "rationale": [
+        "An address inside RFC 5322 display-name form. Only the address itself is PII to redact; the angle brackets stay out."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "email-address/trailing-comment",
+      "text": "email@example.com (Joe Smith)",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 17,
+            "type": "email-address",
+            "text": "email@example.com"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-email-address}}} (Joe Smith)"
+      },
+      "rationale": [
+        "A trailing parenthesised comment must not be absorbed into the span."
+      ],
+      "since": "0.1.0"
+    }
+  ]
+}

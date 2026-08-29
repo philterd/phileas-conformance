@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "policy": "policies/section-redact.json",
+  "tags": [
+    "section"
+  ],
+  "cases": [
+    {
+      "id": "section/between-delimiters",
+      "text": "This is some test. BEGIN-REDACT This text should be redacted. END-REDACT This is outside the text.",
+      "expect": {
+        "spans": [
+          {
+            "start": 19,
+            "end": 72,
+            "type": "section",
+            "text": "BEGIN-REDACT This text should be redacted. END-REDACT"
+          }
+        ],
+        "filtered_text": "This is some test. {{{REDACTED-section}}} This is outside the text."
+      },
+      "rationale": [
+        "Everything between the start and end patterns is one span, including the delimiters.",
+        "The patterns come from the policy, so the case is self-contained."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "section/unterminated-runs-to-end",
+      "text": "This is some test. BEGIN-REDACT This text should be redacted. This is outside the text.",
+      "expect": {
+        "spans": [],
+        "filtered_text": "This is some test. BEGIN-REDACT This text should be redacted. This is outside the text."
+      },
+      "rationale": [
+        "With no end pattern present, the section runs to the end of the document. Pinned because the alternative, matching nothing, would silently leak the section this filter exists to remove."
+      ],
+      "since": "0.1.0"
+    }
+  ]
+}

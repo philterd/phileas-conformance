@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "policy": "policies/phone-number-extension-redact.json",
+  "tags": [
+    "regex",
+    "phone-number-extension"
+  ],
+  "cases": [
+    {
+      "id": "phone-number-extension/bare-x-extension",
+      "text": "he is at x123",
+      "expect": {
+        "spans": [
+          {
+            "start": 9,
+            "end": 13,
+            "type": "phone-number-extension",
+            "text": "x123"
+          }
+        ],
+        "filtered_text": "he is at {{{REDACTED-phone-number-extension}}}"
+      },
+      "rationale": [
+        "An x-prefixed extension on its own."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "phone-number-extension/after-full-number",
+      "text": "his phone number was +1 151-841-2829 x416.",
+      "expect": {
+        "spans": [
+          {
+            "start": 37,
+            "end": 41,
+            "type": "phone-number-extension",
+            "text": "x416"
+          }
+        ],
+        "filtered_text": "his phone number was +1 151-841-2829 {{{REDACTED-phone-number-extension}}}."
+      },
+      "rationale": [
+        "An extension following a complete number; only the extension is this filter's span."
+      ],
+      "since": "0.1.0"
+    }
+  ]
+}

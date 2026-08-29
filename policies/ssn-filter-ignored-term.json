@@ -1,0 +1,15 @@
+{
+  "name": "ssn-filter-ignored-term",
+  "identifiers": {
+    "ssn": {
+      "ignored": [
+        "123-45-6789"
+      ],
+      "ssnFilterStrategies": [
+        {
+          "strategy": "REDACT"
+        }
+      ]
+    }
+  }
+}

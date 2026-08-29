@@ -1,0 +1,144 @@
+{
+  "schema": 1,
+  "policy": "policies/credit-card-redact.json",
+  "tags": [
+    "regex",
+    "credit-card",
+    "luhn",
+    "negative"
+  ],
+  "cases": [
+    {
+      "id": "credit-card/negative-luhn-fails",
+      "text": "the payment method is 1234567812345678 visa.",
+      "expect": {
+        "spans": [],
+        "filtered_text": "the payment method is 1234567812345678 visa."
+      },
+      "rationale": [
+        "Sixteen digits that fail the Luhn check. Validation is what makes this filter usable on documents full of long numbers."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "credit-card/negative-all-zeros",
+      "text": "the payment method is 0000000000000000",
+      "expect": {
+        "spans": [],
+        "filtered_text": "the payment method is 0000000000000000"
+      },
+      "rationale": [
+        "All zeros passes Luhn arithmetically but is not a card number."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "credit-card/negative-luhn-fails-unpunctuated",
+      "text": "the payment method is 9876543219876543",
+      "expect": {
+        "spans": [],
+        "filtered_text": "the payment method is 9876543219876543"
+      },
+      "rationale": [
+        "A second Luhn failure, unpunctuated."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "credit-card/negative-luhn-fails-hyphenated",
+      "text": "the payment method is 9876-5432-1987-6543",
+      "expect": {
+        "spans": [],
+        "filtered_text": "the payment method is 9876-5432-1987-6543"
+      },
+      "rationale": [
+        "Grouping does not exempt a number from validation."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "credit-card/negative-luhn-fails-spaced",
+      "text": "the payment method is 4556 6627 6425 8000",
+      "expect": {
+        "spans": [],
+        "filtered_text": "the payment method is 4556 6627 6425 8000"
+      },
+      "rationale": [
+        "The same for space grouping."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "credit-card/negative-amex-luhn-fails",
+      "text": "the payment method is 376454057005914",
+      "expect": {
+        "spans": [],
+        "filtered_text": "the payment method is 376454057005914"
+      },
+      "rationale": [
+        "A 15-digit number that fails Luhn."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "credit-card/negative-mastercard-luhn-fails",
+      "text": "the payment method is 5567408136464000",
+      "expect": {
+        "spans": [],
+        "filtered_text": "the payment method is 5567408136464000"
+      },
+      "rationale": [
+        "A Mastercard-prefixed number that fails Luhn."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "credit-card/negative-discover-luhn-fails",
+      "text": "the payment method is 6011485579364000",
+      "expect": {
+        "spans": [],
+        "filtered_text": "the payment method is 6011485579364000"
+      },
+      "rationale": [
+        "A Discover-prefixed number that fails Luhn."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "credit-card/negative-leading-hyphen",
+      "text": "the payment method is -1234567812345678 visa.",
+      "expect": {
+        "spans": [],
+        "filtered_text": "the payment method is -1234567812345678 visa."
+      },
+      "rationale": [
+        "A leading hyphen means the digits are part of a longer token, not a card number."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "credit-card/negative-trailing-hyphen",
+      "text": "the payment method is 1234567812345678- visa.",
+      "expect": {
+        "spans": [],
+        "filtered_text": "the payment method is 1234567812345678- visa."
+      },
+      "rationale": [
+        "A trailing hyphen, likewise."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "credit-card/negative-embedded-in-long-digit-run",
+      "text": "00752457000200000007230041111111111111116",
+      "expect": {
+        "spans": [],
+        "filtered_text": "00752457000200000007230041111111111111116"
+      },
+      "rationale": [
+        "A card-length substring inside a much longer digit run must not be extracted; this is the main false-positive risk on machine-generated records."
+      ],
+      "since": "0.1.0"
+    }
+  ]
+}

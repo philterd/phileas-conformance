@@ -1,0 +1,201 @@
+{
+  "schema": 1,
+  "policy": "policies/credit-card-redact.json",
+  "tags": [
+    "regex",
+    "credit-card",
+    "luhn"
+  ],
+  "cases": [
+    {
+      "id": "credit-card/visa-16-digit",
+      "text": "the payment method is 4532613702852251 visa.",
+      "expect": {
+        "spans": [
+          {
+            "start": 22,
+            "end": 38,
+            "type": "credit-card",
+            "text": "4532613702852251"
+          }
+        ],
+        "filtered_text": "the payment method is {{{REDACTED-credit-card}}} visa."
+      },
+      "rationale": [
+        "A 16-digit Visa number in a sentence."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "credit-card/visa-test-number",
+      "text": "the payment method is 4111111111111111 visa.",
+      "expect": {
+        "spans": [
+          {
+            "start": 22,
+            "end": 38,
+            "type": "credit-card",
+            "text": "4111111111111111"
+          }
+        ],
+        "filtered_text": "the payment method is {{{REDACTED-credit-card}}} visa."
+      },
+      "rationale": [
+        "The 4111... test number, the most likely credit card string to appear in any document."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "credit-card/hyphen-grouped",
+      "text": "the payment method is 4716-4366-8767-7438",
+      "expect": {
+        "spans": [
+          {
+            "start": 22,
+            "end": 41,
+            "type": "credit-card",
+            "text": "4716-4366-8767-7438"
+          }
+        ],
+        "filtered_text": "the payment method is {{{REDACTED-credit-card}}}"
+      },
+      "rationale": [
+        "Hyphen-grouped digits, as written on forms."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "credit-card/space-grouped",
+      "text": "the payment method is 4556 5849 8186 7933",
+      "expect": {
+        "spans": [
+          {
+            "start": 22,
+            "end": 41,
+            "type": "credit-card",
+            "text": "4556 5849 8186 7933"
+          }
+        ],
+        "filtered_text": "the payment method is {{{REDACTED-credit-card}}}"
+      },
+      "rationale": [
+        "Space-grouped digits, as extracted from PDFs."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "credit-card/amex-15-digit",
+      "text": "the payment method is 376454057275914",
+      "expect": {
+        "spans": [
+          {
+            "start": 22,
+            "end": 37,
+            "type": "credit-card",
+            "text": "376454057275914"
+          }
+        ],
+        "filtered_text": "the payment method is {{{REDACTED-credit-card}}}"
+      },
+      "rationale": [
+        "American Express numbers are 15 digits, so the length cannot be fixed at 16."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "credit-card/amex-trailing-period",
+      "text": "the payment method is 346009657106278.",
+      "expect": {
+        "spans": [
+          {
+            "start": 22,
+            "end": 37,
+            "type": "credit-card",
+            "text": "346009657106278"
+          }
+        ],
+        "filtered_text": "the payment method is {{{REDACTED-credit-card}}}."
+      },
+      "rationale": [
+        "A 15-digit Amex number with the sentence period outside the span."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "credit-card/mastercard",
+      "text": "the payment method is 5567408136464012",
+      "expect": {
+        "spans": [
+          {
+            "start": 22,
+            "end": 38,
+            "type": "credit-card",
+            "text": "5567408136464012"
+          }
+        ],
+        "filtered_text": "the payment method is {{{REDACTED-credit-card}}}"
+      },
+      "rationale": [
+        "A Mastercard number in the 55 range."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "credit-card/mastercard-51-range",
+      "text": "the payment method is 5100170632668801.",
+      "expect": {
+        "spans": [
+          {
+            "start": 22,
+            "end": 38,
+            "type": "credit-card",
+            "text": "5100170632668801"
+          }
+        ],
+        "filtered_text": "the payment method is {{{REDACTED-credit-card}}}."
+      },
+      "rationale": [
+        "A Mastercard number in the 51 range."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "credit-card/discover",
+      "text": "the payment method is 6011485579364263",
+      "expect": {
+        "spans": [
+          {
+            "start": 22,
+            "end": 38,
+            "type": "credit-card",
+            "text": "6011485579364263"
+          }
+        ],
+        "filtered_text": "the payment method is {{{REDACTED-credit-card}}}"
+      },
+      "rationale": [
+        "A Discover number in the 6011 range."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "credit-card/discover-trailing-period",
+      "text": "the payment method is 6011792597726344.",
+      "expect": {
+        "spans": [
+          {
+            "start": 22,
+            "end": 38,
+            "type": "credit-card",
+            "text": "6011792597726344"
+          }
+        ],
+        "filtered_text": "the payment method is {{{REDACTED-credit-card}}}."
+      },
+      "rationale": [
+        "A second Discover number, ending the sentence."
+      ],
+      "since": "0.1.0"
+    }
+  ]
+}

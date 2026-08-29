@@ -1,0 +1,258 @@
+{
+  "schema": 1,
+  "policy": "policies/currency-redact.json",
+  "tags": [
+    "regex",
+    "currency",
+    "international"
+  ],
+  "cases": [
+    {
+      "id": "currency/euro-symbol-european-grouping",
+      "text": "Patient copay is € 1.500,00 for procedure.",
+      "expect": {
+        "spans": [
+          {
+            "start": 17,
+            "end": 27,
+            "type": "currency",
+            "text": "€ 1.500,00"
+          }
+        ],
+        "filtered_text": "Patient copay is {{{REDACTED-currency}}} for procedure."
+      },
+      "rationale": [
+        "A euro amount using European grouping, where the dot is the thousands separator and the comma is decimal."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "currency/euro-symbol-trailing",
+      "text": "Total bill came to 1.450,00 € in total.",
+      "expect": {
+        "spans": [
+          {
+            "start": 19,
+            "end": 29,
+            "type": "currency",
+            "text": "1.450,00 €"
+          }
+        ],
+        "filtered_text": "Total bill came to {{{REDACTED-currency}}} in total."
+      },
+      "rationale": [
+        "The symbol after the amount, as written in much of Europe."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "currency/euro-symbol-no-space-in-parentheses",
+      "text": "The balance (including €1.500,00 deposit) is settled.",
+      "expect": {
+        "spans": [
+          {
+            "start": 23,
+            "end": 32,
+            "type": "currency",
+            "text": "€1.500,00"
+          }
+        ],
+        "filtered_text": "The balance (including {{{REDACTED-currency}}} deposit) is settled."
+      },
+      "rationale": [
+        "A symbol attached to the amount, inside parentheses."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "currency/euro-cents-only",
+      "text": "Discount of €.50 applied.",
+      "expect": {
+        "spans": [
+          {
+            "start": 12,
+            "end": 16,
+            "type": "currency",
+            "text": "€.50"
+          }
+        ],
+        "filtered_text": "Discount of {{{REDACTED-currency}}} applied."
+      },
+      "rationale": [
+        "A sub-unit amount with no leading zero."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "currency/pound-symbol",
+      "text": "Consultation fee is £ 250.00.",
+      "expect": {
+        "spans": [
+          {
+            "start": 20,
+            "end": 28,
+            "type": "currency",
+            "text": "£ 250.00"
+          }
+        ],
+        "filtered_text": "Consultation fee is {{{REDACTED-currency}}}."
+      },
+      "rationale": [
+        "A pound amount."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "currency/yen-symbol-no-decimals",
+      "text": "Medication cost is ¥ 15000.",
+      "expect": {
+        "spans": [
+          {
+            "start": 19,
+            "end": 26,
+            "type": "currency",
+            "text": "¥ 15000"
+          }
+        ],
+        "filtered_text": "Medication cost is {{{REDACTED-currency}}}."
+      },
+      "rationale": [
+        "Yen is conventionally written without decimals."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "currency/rupee-symbol-indian-grouping",
+      "text": "Hospital charge is ₹ 75,000.50 today.",
+      "expect": {
+        "spans": [
+          {
+            "start": 19,
+            "end": 30,
+            "type": "currency",
+            "text": "₹ 75,000.50"
+          }
+        ],
+        "filtered_text": "Hospital charge is {{{REDACTED-currency}}} today."
+      },
+      "rationale": [
+        "A rupee amount with a decimal part."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "currency/iso-code-leading",
+      "text": "Lab fee CAD 150.75 paid.",
+      "expect": {
+        "spans": [
+          {
+            "start": 8,
+            "end": 18,
+            "type": "currency",
+            "text": "CAD 150.75"
+          }
+        ],
+        "filtered_text": "Lab fee {{{REDACTED-currency}}} paid."
+      },
+      "rationale": [
+        "A three-letter ISO code before the amount."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "currency/iso-code-trailing",
+      "text": "Pharmacy balance 75.50 AUD total.",
+      "expect": {
+        "spans": [
+          {
+            "start": 17,
+            "end": 26,
+            "type": "currency",
+            "text": "75.50 AUD"
+          }
+        ],
+        "filtered_text": "Pharmacy balance {{{REDACTED-currency}}} total."
+      },
+      "rationale": [
+        "An ISO code after the amount."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "currency/iso-code-lowercase-trailing",
+      "text": "Payment received: 500 eur on file.",
+      "expect": {
+        "spans": [
+          {
+            "start": 18,
+            "end": 25,
+            "type": "currency",
+            "text": "500 eur"
+          }
+        ],
+        "filtered_text": "Payment received: {{{REDACTED-currency}}} on file."
+      },
+      "rationale": [
+        "A lowercase ISO code."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "currency/iso-code-lowercase-leading",
+      "text": "Invoice gbp 1250.00 issued.",
+      "expect": {
+        "spans": [
+          {
+            "start": 8,
+            "end": 19,
+            "type": "currency",
+            "text": "gbp 1250.00"
+          }
+        ],
+        "filtered_text": "Invoice {{{REDACTED-currency}}} issued."
+      },
+      "rationale": [
+        "A lowercase ISO code before the amount."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "currency/iso-code-in-question",
+      "text": "Was the total amount 250 GBP?",
+      "expect": {
+        "spans": [
+          {
+            "start": 21,
+            "end": 28,
+            "type": "currency",
+            "text": "250 GBP"
+          }
+        ],
+        "filtered_text": "Was the total amount {{{REDACTED-currency}}}?"
+      },
+      "rationale": [
+        "An amount inside a question, so the question mark stays outside the span."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "currency/symbol-and-iso-code",
+      "text": "Itemized as \"$3,450.75 USD\" in bill.",
+      "expect": {
+        "spans": [
+          {
+            "start": 13,
+            "end": 26,
+            "type": "currency",
+            "text": "$3,450.75 USD"
+          }
+        ],
+        "filtered_text": "Itemized as \"{{{REDACTED-currency}}}\" in bill."
+      },
+      "rationale": [
+        "Both a symbol and an ISO code on the same amount; the span covers the whole thing."
+      ],
+      "since": "0.1.0"
+    }
+  ]
+}

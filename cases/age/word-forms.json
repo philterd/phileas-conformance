@@ -1,0 +1,207 @@
+{
+  "schema": 1,
+  "policy": "policies/age-redact.json",
+  "tags": [
+    "regex",
+    "age"
+  ],
+  "cases": [
+    {
+      "id": "age/word-years-old",
+      "text": "the patient is thirty-five years old.",
+      "expect": {
+        "spans": [
+          {
+            "start": 15,
+            "end": 36,
+            "type": "age",
+            "text": "thirty-five years old"
+          }
+        ],
+        "filtered_text": "the patient is {{{REDACTED-age}}}."
+      },
+      "rationale": [
+        "Spelled-out ages are written out in clinical prose and are PII exactly as numeric ages are.",
+        "Java matches these via its NUMBER_WORD patterns; Python and .NET have no equivalent pattern and miss them entirely."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "age/word-hyphenated-year-old",
+      "text": "a thirty-five-year-old patient",
+      "expect": {
+        "spans": [
+          {
+            "start": 2,
+            "end": 22,
+            "type": "age",
+            "text": "thirty-five-year-old"
+          }
+        ],
+        "filtered_text": "a {{{REDACTED-age}}} patient"
+      },
+      "rationale": [
+        "The fully hyphenated spelled-out adjectival form."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "age/word-aged-prefix",
+      "text": "she is aged forty-two",
+      "expect": {
+        "spans": [
+          {
+            "start": 7,
+            "end": 21,
+            "type": "age",
+            "text": "aged forty-two"
+          }
+        ],
+        "filtered_text": "she is {{{REDACTED-age}}}"
+      },
+      "rationale": [
+        "The 'aged' keyword followed by a spelled-out value."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "age/word-one-hundred-years-old",
+      "text": "he is one hundred years old",
+      "expect": {
+        "spans": [
+          {
+            "start": 6,
+            "end": 27,
+            "type": "age",
+            "text": "one hundred years old"
+          }
+        ],
+        "filtered_text": "he is {{{REDACTED-age}}}"
+      },
+      "rationale": [
+        "Values of one hundred and above, which need the hundreds branch of the number-word pattern."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "age/word-years-old-bare",
+      "text": "she is thirty-five years old",
+      "expect": {
+        "spans": [
+          {
+            "start": 7,
+            "end": 28,
+            "type": "age",
+            "text": "thirty-five years old"
+          }
+        ],
+        "filtered_text": "she is {{{REDACTED-age}}}"
+      },
+      "rationale": [
+        "The spelled-out form with the 'old' context word present, which the post-filter requires.",
+        "Contrast with age/negative-duration-ago, where the same shape without age context is dropped."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "age/labeled-word-colon-space",
+      "text": "Age: thirty-five",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 16,
+            "type": "age",
+            "text": "Age: thirty-five"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-age}}}"
+      },
+      "rationale": [
+        "Spelled-out value with a label separator variant: colon followed by a space.",
+        "Confirms the separator handling is shared between numeric and spelled-out values."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "age/labeled-word-colon-nospace",
+      "text": "Age:thirty-five",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 15,
+            "type": "age",
+            "text": "Age:thirty-five"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-age}}}"
+      },
+      "rationale": [
+        "Spelled-out value with a label separator variant: colon with no space.",
+        "Confirms the separator handling is shared between numeric and spelled-out values."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "age/labeled-word-equals",
+      "text": "Age = thirty-five",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 17,
+            "type": "age",
+            "text": "Age = thirty-five"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-age}}}"
+      },
+      "rationale": [
+        "Spelled-out value with a label separator variant: equals sign.",
+        "Confirms the separator handling is shared between numeric and spelled-out values."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "age/labeled-word-hyphen",
+      "text": "Age - thirty-five",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 17,
+            "type": "age",
+            "text": "Age - thirty-five"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-age}}}"
+      },
+      "rationale": [
+        "Spelled-out value with a label separator variant: hyphen.",
+        "Confirms the separator handling is shared between numeric and spelled-out values."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "age/labeled-word-aged-colon",
+      "text": "Aged: thirty-five",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 17,
+            "type": "age",
+            "text": "Aged: thirty-five"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-age}}}"
+      },
+      "rationale": [
+        "Spelled-out value with a label separator variant: the 'aged' variant with a colon.",
+        "Confirms the separator handling is shared between numeric and spelled-out values."
+      ],
+      "since": "0.1.0"
+    }
+  ]
+}

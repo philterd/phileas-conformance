@@ -1,0 +1,15 @@
+{
+  "name": "ssn-static-replace",
+  "identifiers": {
+    "ssn": {
+      "ssnFilterStrategies": [
+        {
+          "strategy": "STATIC_REPLACE",
+          "staticReplacement": "REDACTED",
+          "maskCharacter": "*",
+          "maskLength": "same"
+        }
+      ]
+    }
+  }
+}

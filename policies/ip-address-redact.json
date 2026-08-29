@@ -1,0 +1,12 @@
+{
+  "name": "ip-address-redact",
+  "identifiers": {
+    "ipAddress": {
+      "ipAddressFilterStrategies": [
+        {
+          "strategy": "REDACT"
+        }
+      ]
+    }
+  }
+}

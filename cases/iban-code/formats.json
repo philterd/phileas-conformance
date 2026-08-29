@@ -1,0 +1,67 @@
+{
+  "schema": 1,
+  "policy": "policies/iban-code-redact.json",
+  "tags": [
+    "regex",
+    "iban-code"
+  ],
+  "cases": [
+    {
+      "id": "iban-code/gb-unspaced",
+      "text": "bank code of GB33BUKB20201555555555 ok?",
+      "expect": {
+        "spans": [
+          {
+            "start": 13,
+            "end": 35,
+            "type": "iban-code",
+            "text": "GB33BUKB20201555555555"
+          }
+        ],
+        "filtered_text": "bank code of {{{REDACTED-iban-code}}} ok?"
+      },
+      "rationale": [
+        "A UK IBAN written without spaces."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "iban-code/gb-unspaced-second",
+      "text": "bank code of GB15MIDL40051512345678 ok?",
+      "expect": {
+        "spans": [
+          {
+            "start": 13,
+            "end": 35,
+            "type": "iban-code",
+            "text": "GB15MIDL40051512345678"
+          }
+        ],
+        "filtered_text": "bank code of {{{REDACTED-iban-code}}} ok?"
+      },
+      "rationale": [
+        "A second UK IBAN, confirming the bank identifier is not fixed."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "iban-code/gb-spaced-groups",
+      "text": "bank code of GB15 MIDL 4005 1512 3456 78 ok?",
+      "expect": {
+        "spans": [
+          {
+            "start": 13,
+            "end": 40,
+            "type": "iban-code",
+            "text": "GB15 MIDL 4005 1512 3456 78"
+          }
+        ],
+        "filtered_text": "bank code of {{{REDACTED-iban-code}}} ok?"
+      },
+      "rationale": [
+        "IBANs are conventionally printed in four-character groups, so the spaced form must match and the span must cover the whole thing."
+      ],
+      "since": "0.1.0"
+    }
+  ]
+}

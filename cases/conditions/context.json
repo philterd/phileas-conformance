@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "policy": "policies/ssn-condition-context.json",
+  "tags": [
+    "conditions",
+    "policy"
+  ],
+  "cases": [
+    {
+      "id": "conditions/context-equals-satisfied",
+      "text": "ssn 123-45-6789 and 555-55-1234",
+      "expect": {
+        "spans": [
+          {
+            "start": 4,
+            "end": 15,
+            "type": "ssn",
+            "text": "123-45-6789"
+          },
+          {
+            "start": 20,
+            "end": 31,
+            "type": "ssn",
+            "text": "555-55-1234"
+          }
+        ],
+        "filtered_text": "ssn MATCHED and MATCHED"
+      },
+      "rationale": [
+        "A condition on the request context rather than the token. The corpus always filters with context 'context', so this condition holds for every span."
+      ],
+      "since": "0.1.0"
+    }
+  ]
+}

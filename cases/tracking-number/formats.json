@@ -1,0 +1,163 @@
+{
+  "schema": 1,
+  "policy": "policies/tracking-number-redact.json",
+  "tags": [
+    "regex",
+    "tracking-number"
+  ],
+  "cases": [
+    {
+      "id": "tracking-number/ups",
+      "text": "the tracking number is 1Z9YF1280343418566",
+      "expect": {
+        "spans": [
+          {
+            "start": 23,
+            "end": 41,
+            "type": "tracking-number",
+            "text": "1Z9YF1280343418566"
+          }
+        ],
+        "filtered_text": "the tracking number is {{{REDACTED-tracking-number}}}"
+      },
+      "rationale": [
+        "A UPS 1Z tracking number."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "tracking-number/usps-22-digit",
+      "text": "the tracking number is 9400100000000000000000",
+      "expect": {
+        "spans": [
+          {
+            "start": 23,
+            "end": 45,
+            "type": "tracking-number",
+            "text": "9400100000000000000000"
+          }
+        ],
+        "filtered_text": "the tracking number is {{{REDACTED-tracking-number}}}"
+      },
+      "rationale": [
+        "A 22-digit USPS number."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "tracking-number/usps-spaced-groups",
+      "text": "the tracking number is 9400 1000 0000 0000 0000",
+      "expect": {
+        "spans": [
+          {
+            "start": 23,
+            "end": 47,
+            "type": "tracking-number",
+            "text": "9400 1000 0000 0000 0000"
+          }
+        ],
+        "filtered_text": "the tracking number is {{{REDACTED-tracking-number}}}"
+      },
+      "rationale": [
+        "The same USPS number in printed four-digit groups."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "tracking-number/fedex-34-digit",
+      "text": "the tracking number is 4204319935009201990138501144099814",
+      "expect": {
+        "spans": [
+          {
+            "start": 23,
+            "end": 57,
+            "type": "tracking-number",
+            "text": "4204319935009201990138501144099814"
+          }
+        ],
+        "filtered_text": "the tracking number is {{{REDACTED-tracking-number}}}"
+      },
+      "rationale": [
+        "A 34-digit FedEx number, the longest supported form."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "tracking-number/fedex-30-digit",
+      "text": "the tracking number is 420431993500920199013850114409",
+      "expect": {
+        "spans": [
+          {
+            "start": 23,
+            "end": 53,
+            "type": "tracking-number",
+            "text": "420431993500920199013850114409"
+          }
+        ],
+        "filtered_text": "the tracking number is {{{REDACTED-tracking-number}}}"
+      },
+      "rationale": [
+        "A 30-digit variant."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "tracking-number/fedex-28-digit",
+      "text": "the tracking number is 4204319935009201990138501144",
+      "expect": {
+        "spans": [
+          {
+            "start": 23,
+            "end": 51,
+            "type": "tracking-number",
+            "text": "4204319935009201990138501144"
+          }
+        ],
+        "filtered_text": "the tracking number is {{{REDACTED-tracking-number}}}"
+      },
+      "rationale": [
+        "A 28-digit variant."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "tracking-number/fedex-26-digit",
+      "text": "the tracking number is 42043199350092019901385011",
+      "expect": {
+        "spans": [
+          {
+            "start": 23,
+            "end": 49,
+            "type": "tracking-number",
+            "text": "42043199350092019901385011"
+          }
+        ],
+        "filtered_text": "the tracking number is {{{REDACTED-tracking-number}}}"
+      },
+      "rationale": [
+        "A 26-digit variant. The carrier formats vary in length, so several are pinned rather than one."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "tracking-number/ups-unvalidated-check-digit",
+      "text": "tracking 1Z9YF1280343418565",
+      "expect": {
+        "spans": [
+          {
+            "start": 9,
+            "end": 27,
+            "type": "tracking-number",
+            "text": "1Z9YF1280343418565"
+          }
+        ],
+        "filtered_text": "tracking {{{REDACTED-tracking-number}}}"
+      },
+      "rationale": [
+        "A UPS number whose check digit does not verify is still detected.",
+        "Pinned as current behaviour, not as an endorsement: tracking detection is shape-only, trading precision for recall, unlike the credit card and routing number filters which validate."
+      ],
+      "since": "0.1.0"
+    }
+  ]
+}

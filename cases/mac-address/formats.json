@@ -1,0 +1,67 @@
+{
+  "schema": 1,
+  "policy": "policies/mac-address-redact.json",
+  "tags": [
+    "regex",
+    "mac-address"
+  ],
+  "cases": [
+    {
+      "id": "mac-address/hyphen-separated",
+      "text": "the mac is 00-14-22-04-25-37.",
+      "expect": {
+        "spans": [
+          {
+            "start": 11,
+            "end": 28,
+            "type": "mac-address",
+            "text": "00-14-22-04-25-37"
+          }
+        ],
+        "filtered_text": "the mac is {{{REDACTED-mac-address}}}."
+      },
+      "rationale": [
+        "Six octets separated by hyphens, the Windows convention."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "mac-address/colon-separated",
+      "text": "the mac is 00:14:22:04:25:37.",
+      "expect": {
+        "spans": [
+          {
+            "start": 11,
+            "end": 28,
+            "type": "mac-address",
+            "text": "00:14:22:04:25:37"
+          }
+        ],
+        "filtered_text": "the mac is {{{REDACTED-mac-address}}}."
+      },
+      "rationale": [
+        "Six octets separated by colons, the Unix convention."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "mac-address/lowercase-hex",
+      "text": "mac aa:bb:cc:dd:ee:ff",
+      "expect": {
+        "spans": [
+          {
+            "start": 4,
+            "end": 21,
+            "type": "mac-address",
+            "text": "aa:bb:cc:dd:ee:ff"
+          }
+        ],
+        "filtered_text": "mac {{{REDACTED-mac-address}}}"
+      },
+      "rationale": [
+        "Lowercase hex digits must match as readily as uppercase."
+      ],
+      "since": "0.1.0"
+    }
+  ]
+}

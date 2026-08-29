@@ -1,0 +1,60 @@
+{
+  "schema": 1,
+  "policy": "policies/ssn-redact.json",
+  "tags": [
+    "adjacency",
+    "integration"
+  ],
+  "cases": [
+    {
+      "id": "adjacency/space-separated-pair",
+      "text": "123-45-6789 123-45-6789",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 11,
+            "type": "ssn",
+            "text": "123-45-6789"
+          },
+          {
+            "start": 12,
+            "end": 23,
+            "type": "ssn",
+            "text": "123-45-6789"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-ssn}}} {{{REDACTED-ssn}}}"
+      },
+      "rationale": [
+        "Two SSNs separated by a space produce two spans."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "adjacency/comma-separated-pair",
+      "text": "123-45-6789,123-45-6789",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 11,
+            "type": "ssn",
+            "text": "123-45-6789"
+          },
+          {
+            "start": 12,
+            "end": 23,
+            "type": "ssn",
+            "text": "123-45-6789"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-ssn}}},{{{REDACTED-ssn}}}"
+      },
+      "rationale": [
+        "A comma separator likewise, with no whitespace."
+      ],
+      "since": "0.1.0"
+    }
+  ]
+}

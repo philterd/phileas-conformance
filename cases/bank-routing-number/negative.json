@@ -1,0 +1,59 @@
+{
+  "schema": 1,
+  "policy": "policies/bank-routing-number-redact.json",
+  "tags": [
+    "regex",
+    "bank-routing-number",
+    "negative"
+  ],
+  "cases": [
+    {
+      "id": "bank-routing-number/negative-bad-checksum",
+      "text": "the routing number is 111007025 patient is 3.5years old.",
+      "expect": {
+        "spans": [],
+        "filtered_text": "the routing number is 111007025 patient is 3.5years old."
+      },
+      "rationale": [
+        "Nine digits whose ABA checksum fails. Validation, not shape alone, is what makes this filter usable on documents full of nine-digit numbers."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "bank-routing-number/negative-bad-checksum-bare",
+      "text": "111000026",
+      "expect": {
+        "spans": [],
+        "filtered_text": "111000026"
+      },
+      "rationale": [
+        "A single transposed digit breaks the checksum."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "bank-routing-number/negative-eight-digits",
+      "text": "routing 11100002",
+      "expect": {
+        "spans": [],
+        "filtered_text": "routing 11100002"
+      },
+      "rationale": [
+        "Eight digits is not a routing number."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "bank-routing-number/negative-ten-digits",
+      "text": "routing 1110000250",
+      "expect": {
+        "spans": [],
+        "filtered_text": "routing 1110000250"
+      },
+      "rationale": [
+        "Ten digits is not a routing number."
+      ],
+      "since": "0.1.0"
+    }
+  ]
+}

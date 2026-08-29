@@ -1,0 +1,6 @@
+{
+  "name": "ssn-disabled",
+  "identifiers": {
+    "ssn": { "enabled": false, "ssnFilterStrategies": [ { "strategy": "REDACT" } ] }
+  }
+}

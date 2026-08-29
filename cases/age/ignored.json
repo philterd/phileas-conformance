@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "tags": [
+    "regex",
+    "age",
+    "policy-ignored"
+  ],
+  "cases": [
+    {
+      "id": "age/ignored-pattern-not-redacted",
+      "policy": "policies/age-redact-ignored-pattern.json",
+      "text": "the patient is 35years old.",
+      "expect": {
+        "spans": [],
+        "filtered_text": "the patient is 35years old."
+      },
+      "rationale": [
+        "A policy ignoredPatterns entry covering the matched text must suppress redaction.",
+        "The filter still detects the age internally, but an ignored span is dropped rather than applied, so at the service level the contract is no applied span and text returned unchanged."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "age/ignored-term-case-insensitive",
+      "policy": "policies/age-redact-ignored-terms.json",
+      "text": "the patient is 35yEaRs old.",
+      "expect": {
+        "spans": [],
+        "filtered_text": "the patient is 35yEaRs old."
+      },
+      "rationale": [
+        "An ignored term with caseSensitive false must suppress redaction regardless of the casing in the document.",
+        "Pins that ignore matching is case insensitive by default, which is easy to get wrong when porting."
+      ],
+      "since": "0.1.0"
+    }
+  ]
+}

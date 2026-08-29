@@ -1,0 +1,86 @@
+{
+  "schema": 1,
+  "policy": "policies/vin-redact.json",
+  "tags": [
+    "regex",
+    "vin"
+  ],
+  "cases": [
+    {
+      "id": "vin/uppercase",
+      "text": "the vin is JB3BA36KXHU036784.",
+      "expect": {
+        "spans": [
+          {
+            "start": 11,
+            "end": 28,
+            "type": "vin",
+            "text": "JB3BA36KXHU036784"
+          }
+        ],
+        "filtered_text": "the vin is {{{REDACTED-vin}}}."
+      },
+      "rationale": [
+        "A valid 17-character VIN with a correct check digit."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "vin/second-example",
+      "text": "the vin is 2T2HK31U38C057399.",
+      "expect": {
+        "spans": [
+          {
+            "start": 11,
+            "end": 28,
+            "type": "vin",
+            "text": "2T2HK31U38C057399"
+          }
+        ],
+        "filtered_text": "the vin is {{{REDACTED-vin}}}."
+      },
+      "rationale": [
+        "A second valid VIN, with a numeric check digit rather than X."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "vin/bare",
+      "text": "JB3BA36KXHU036784",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 17,
+            "type": "vin",
+            "text": "JB3BA36KXHU036784"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-vin}}}"
+      },
+      "rationale": [
+        "A VIN as the entire document."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "vin/lowercase",
+      "text": "vin jb3ba36kxhu036784",
+      "expect": {
+        "spans": [
+          {
+            "start": 4,
+            "end": 21,
+            "type": "vin",
+            "text": "jb3ba36kxhu036784"
+          }
+        ],
+        "filtered_text": "vin {{{REDACTED-vin}}}"
+      },
+      "rationale": [
+        "Lowercase VINs appear in free text and are matched case insensitively."
+      ],
+      "since": "0.1.0"
+    }
+  ]
+}

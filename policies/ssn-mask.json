@@ -1,0 +1,15 @@
+{
+  "name": "ssn-mask",
+  "identifiers": {
+    "ssn": {
+      "ssnFilterStrategies": [
+        {
+          "strategy": "MASK",
+          "staticReplacement": "REDACTED",
+          "maskCharacter": "*",
+          "maskLength": "same"
+        }
+      ]
+    }
+  }
+}

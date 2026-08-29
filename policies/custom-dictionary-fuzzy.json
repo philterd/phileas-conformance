@@ -1,0 +1,14 @@
+{
+  "name": "custom-dictionary-fuzzy",
+  "identifiers": {
+    "dictionaries": [
+      {
+        "classification": "project-codename",
+        "terms": ["Bluebird", "Redwood", "Harrier"],
+        "fuzzy": true,
+        "sensitivity": "medium",
+        "customFilterStrategies": [ { "strategy": "REDACT" } ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,275 @@
+{
+  "schema": 1,
+  "policy": "policies/zip-code-redact.json",
+  "tags": [
+    "regex",
+    "zip-code"
+  ],
+  "cases": [
+    {
+      "id": "zip-code/five-digit",
+      "text": "the zip is 90210.",
+      "expect": {
+        "spans": [
+          {
+            "start": 11,
+            "end": 16,
+            "type": "zip-code",
+            "text": "90210"
+          }
+        ],
+        "filtered_text": "the zip is {{{REDACTED-zip-code}}}."
+      },
+      "rationale": [
+        "A five-digit ZIP at the end of a sentence."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "zip-code/five-digit-mid-sentence",
+      "text": "the zip is 90210 in california.",
+      "expect": {
+        "spans": [
+          {
+            "start": 11,
+            "end": 16,
+            "type": "zip-code",
+            "text": "90210"
+          }
+        ],
+        "filtered_text": "the zip is {{{REDACTED-zip-code}}} in california."
+      },
+      "rationale": [
+        "A ZIP followed by more text."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "zip-code/five-digit-other-value",
+      "text": "the zip is 85055 in california.",
+      "expect": {
+        "spans": [
+          {
+            "start": 11,
+            "end": 16,
+            "type": "zip-code",
+            "text": "85055"
+          }
+        ],
+        "filtered_text": "the zip is {{{REDACTED-zip-code}}} in california."
+      },
+      "rationale": [
+        "A second ZIP, confirming no fixed value list."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "zip-code/zip-plus-four",
+      "text": "the zip is 90213-1544 in california.",
+      "expect": {
+        "spans": [
+          {
+            "start": 11,
+            "end": 21,
+            "type": "zip-code",
+            "text": "90213-1544"
+          }
+        ],
+        "filtered_text": "the zip is {{{REDACTED-zip-code}}} in california."
+      },
+      "rationale": [
+        "ZIP+4 with a hyphen; the span covers the extension."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "zip-code/in-longer-document",
+      "text": "George Washington was president and his ssn was 123-45-6789 and he lived in 90210.",
+      "expect": {
+        "spans": [
+          {
+            "start": 76,
+            "end": 81,
+            "type": "zip-code",
+            "text": "90210"
+          }
+        ],
+        "filtered_text": "George Washington was president and his ssn was 123-45-6789 and he lived in {{{REDACTED-zip-code}}}."
+      },
+      "rationale": [
+        "A ZIP in a document that also contains an SSN, so the two filters must not interfere."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "zip-code/zip-plus-four-in-document",
+      "text": "George Washington was president and his ssn was 123-45-6789 and he lived in 90210-1234.",
+      "expect": {
+        "spans": [
+          {
+            "start": 76,
+            "end": 86,
+            "type": "zip-code",
+            "text": "90210-1234"
+          }
+        ],
+        "filtered_text": "George Washington was president and his ssn was 123-45-6789 and he lived in {{{REDACTED-zip-code}}}."
+      },
+      "rationale": [
+        "ZIP+4 in the same longer document."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "zip-code/nine-digit-unhyphenated",
+      "text": "George Washington was president and his ssn was 123-45-6789 and he lived in 902101234.",
+      "expect": {
+        "spans": [
+          {
+            "start": 76,
+            "end": 85,
+            "type": "zip-code",
+            "text": "902101234"
+          }
+        ],
+        "filtered_text": "George Washington was president and his ssn was 123-45-6789 and he lived in {{{REDACTED-zip-code}}}."
+      },
+      "rationale": [
+        "A nine-digit run is read as ZIP+4 without the hyphen. Pinned because it is a deliberate choice, and a debatable one: it also matches any nine-digit number."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "zip-code/two-in-one-document",
+      "text": "George Washington lived in 90210 and 09865.",
+      "expect": {
+        "spans": [
+          {
+            "start": 27,
+            "end": 32,
+            "type": "zip-code",
+            "text": "90210"
+          },
+          {
+            "start": 37,
+            "end": 42,
+            "type": "zip-code",
+            "text": "09865"
+          }
+        ],
+        "filtered_text": "George Washington lived in {{{REDACTED-zip-code}}} and {{{REDACTED-zip-code}}}."
+      },
+      "rationale": [
+        "Two ZIPs in one document must produce two spans, in order."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "zip-code/two-mixed-forms",
+      "text": "George Washington lived in 90210-1234 and 09865.",
+      "expect": {
+        "spans": [
+          {
+            "start": 27,
+            "end": 37,
+            "type": "zip-code",
+            "text": "90210-1234"
+          },
+          {
+            "start": 42,
+            "end": 47,
+            "type": "zip-code",
+            "text": "09865"
+          }
+        ],
+        "filtered_text": "George Washington lived in {{{REDACTED-zip-code}}} and {{{REDACTED-zip-code}}}."
+      },
+      "rationale": [
+        "A ZIP+4 and a plain ZIP together."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "zip-code/two-zip-plus-four",
+      "text": "George Washington lived in 90210-1234 and 09865-1234.",
+      "expect": {
+        "spans": [
+          {
+            "start": 27,
+            "end": 37,
+            "type": "zip-code",
+            "text": "90210-1234"
+          },
+          {
+            "start": 42,
+            "end": 52,
+            "type": "zip-code",
+            "text": "09865-1234"
+          }
+        ],
+        "filtered_text": "George Washington lived in {{{REDACTED-zip-code}}} and {{{REDACTED-zip-code}}}."
+      },
+      "rationale": [
+        "Two ZIP+4 values together."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "zip-code/end-of-document",
+      "text": "the zip code is 90210",
+      "expect": {
+        "spans": [
+          {
+            "start": 16,
+            "end": 21,
+            "type": "zip-code",
+            "text": "90210"
+          }
+        ],
+        "filtered_text": "the zip code is {{{REDACTED-zip-code}}}"
+      },
+      "rationale": [
+        "A ZIP as the final token, with no trailing punctuation."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "zip-code/lowest-valid",
+      "text": "zip 00501",
+      "expect": {
+        "spans": [
+          {
+            "start": 4,
+            "end": 9,
+            "type": "zip-code",
+            "text": "00501"
+          }
+        ],
+        "filtered_text": "zip {{{REDACTED-zip-code}}}"
+      },
+      "rationale": [
+        "00501 is a real ZIP (Holtsville, NY) and the lowest in use, so leading zeros must survive."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "zip-code/highest-valid",
+      "text": "zip 99950",
+      "expect": {
+        "spans": [
+          {
+            "start": 4,
+            "end": 9,
+            "type": "zip-code",
+            "text": "99950"
+          }
+        ],
+        "filtered_text": "zip {{{REDACTED-zip-code}}}"
+      },
+      "rationale": [
+        "99950 is the highest ZIP in use, at the top of the range."
+      ],
+      "since": "0.1.0"
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "name": "drivers-license-number-redact",
+  "identifiers": {
+    "driversLicense": {
+      "driversLicenseFilterStrategies": [
+        {
+          "strategy": "REDACT"
+        }
+      ]
+    }
+  }
+}

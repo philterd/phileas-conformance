@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "policy": "policies/bitcoin-address-redact.json",
+  "tags": [
+    "regex",
+    "bitcoin-address",
+    "negative"
+  ],
+  "cases": [
+    {
+      "id": "bitcoin-address/negative-too-short",
+      "text": "addr 1234",
+      "expect": {
+        "spans": [],
+        "filtered_text": "addr 1234"
+      },
+      "rationale": [
+        "Far below the minimum address length."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "bitcoin-address/negative-base58-excluded-chars",
+      "text": "addr 1O0IlBFAW2dnQeM6wqmy1gbGtv",
+      "expect": {
+        "spans": [],
+        "filtered_text": "addr 1O0IlBFAW2dnQeM6wqmy1gbGtv"
+      },
+      "rationale": [
+        "Base58 excludes 0, O, I, and l precisely because they are visually ambiguous, so a string containing them is not an address."
+      ],
+      "since": "0.1.0"
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "policy": "policies/phone-number-extension-redact.json",
+  "tags": [
+    "regex",
+    "phone-number-extension",
+    "negative"
+  ],
+  "cases": [
+    {
+      "id": "phone-number-extension/negative-bare-digits",
+      "text": "100",
+      "expect": {
+        "spans": [],
+        "filtered_text": "100"
+      },
+      "rationale": [
+        "Bare digits with no x prefix are not an extension."
+      ],
+      "since": "0.1.0"
+    }
+  ]
+}

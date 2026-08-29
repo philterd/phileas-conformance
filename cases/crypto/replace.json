@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "policy": "policies/ssn-crypto-replace.json",
+  "tags": [
+    "crypto",
+    "strategies"
+  ],
+  "cases": [
+    {
+      "id": "crypto/replace-removes-original",
+      "text": "ssn 123-45-6789 and 555-55-1234 and 123-45-6789 again",
+      "expect": {
+        "spans": [
+          {
+            "start": 4,
+            "end": 15,
+            "type": "ssn",
+            "text": "123-45-6789"
+          },
+          {
+            "start": 20,
+            "end": 31,
+            "type": "ssn",
+            "text": "555-55-1234"
+          },
+          {
+            "start": 36,
+            "end": 47,
+            "type": "ssn",
+            "text": "123-45-6789"
+          }
+        ],
+        "properties": [
+          "original-absent",
+          "replacement-differs"
+        ]
+      },
+      "rationale": [
+        "CRYPTO_REPLACE has no reproducible output: phileas emits different ciphertext on every call, even for the same value in the same document with a pinned key and IV. So the corpus asserts what the strategy promises rather than what it produces.",
+        "Detection is still asserted exactly. Only the replacement text is described by property.",
+        "consistent-within-document is deliberately not asserted here, because this strategy does not provide it: the same value encrypts differently each time."
+      ],
+      "since": "0.1.0"
+    }
+  ]
+}

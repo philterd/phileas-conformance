@@ -1,0 +1,371 @@
+{
+  "schema": 1,
+  "policy": "policies/date-redact.json",
+  "tags": [
+    "regex",
+    "date"
+  ],
+  "cases": [
+    {
+      "id": "date/month-day-year",
+      "text": "May 22, 1999",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 12,
+            "type": "date",
+            "text": "May 22, 1999"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-date}}}"
+      },
+      "rationale": [
+        "Abbreviated-month form with a comma."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "date/full-month-day-year",
+      "text": "November 22, 1999",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 17,
+            "type": "date",
+            "text": "November 22, 1999"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-date}}}"
+      },
+      "rationale": [
+        "Full month name, day, comma, four-digit year."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "date/single-digit-day",
+      "text": "November 2, 1999",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 16,
+            "type": "date",
+            "text": "November 2, 1999"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-date}}}"
+      },
+      "rationale": [
+        "A single-digit day must not need padding."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "date/ordinal-day-suffix",
+      "text": "November 22nd, 1999",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 19,
+            "type": "date",
+            "text": "November 22nd, 1999"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-date}}}"
+      },
+      "rationale": [
+        "An ordinal suffix attached to the day."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "date/ordinal-suffix-detached",
+      "text": "November 22 nd, 1999",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 20,
+            "type": "date",
+            "text": "November 22 nd, 1999"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-date}}}"
+      },
+      "rationale": [
+        "The ordinal suffix separated by a space, which happens in extracted text."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "date/month-and-ordinal-day-no-year",
+      "text": "November 22nd",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 13,
+            "type": "date",
+            "text": "November 22nd"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-date}}}"
+      },
+      "rationale": [
+        "A month and ordinal day with no year is still a date."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "date/month-ordinal-first",
+      "text": "May 1st",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 7,
+            "type": "date",
+            "text": "May 1st"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-date}}}"
+      },
+      "rationale": [
+        "The 1st ordinal form."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "date/month-ordinal-first-spaced",
+      "text": "May 1 st",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 8,
+            "type": "date",
+            "text": "May 1 st"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-date}}}"
+      },
+      "rationale": [
+        "The 1st ordinal with a detached suffix."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "date/month-ordinal-th",
+      "text": "June 13th",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 9,
+            "type": "date",
+            "text": "June 13th"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-date}}}"
+      },
+      "rationale": [
+        "A th ordinal."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "date/month-ordinal-fourth",
+      "text": "December 4th",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 12,
+            "type": "date",
+            "text": "December 4th"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-date}}}"
+      },
+      "rationale": [
+        "A second th ordinal, on a different month."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "date/month-and-year",
+      "text": "January 2012",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 12,
+            "type": "date",
+            "text": "January 2012"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-date}}}"
+      },
+      "rationale": [
+        "Month and year with no day."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "date/month-and-year-december",
+      "text": "December 2015",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 13,
+            "type": "date",
+            "text": "December 2015"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-date}}}"
+      },
+      "rationale": [
+        "A second month-and-year, at year end."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "date/month-and-year-november",
+      "text": "November 1999",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 13,
+            "type": "date",
+            "text": "November 1999"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-date}}}"
+      },
+      "rationale": [
+        "A third, confirming no month is special-cased."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "date/lowercase-month",
+      "text": "april 1999",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 10,
+            "type": "date",
+            "text": "april 1999"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-date}}}"
+      },
+      "rationale": [
+        "Month names match case insensitively."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "date/abbreviated-month-with-period",
+      "text": "On Aug. 31, 2020, Plaintiff, Wendy J. Christophersen, was appointed as interim",
+      "expect": {
+        "spans": [
+          {
+            "start": 3,
+            "end": 16,
+            "type": "date",
+            "text": "Aug. 31, 2020"
+          }
+        ],
+        "filtered_text": "On {{{REDACTED-date}}}, Plaintiff, Wendy J. Christophersen, was appointed as interim"
+      },
+      "rationale": [
+        "An abbreviated month with a trailing period, as used in legal filings."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "date/month-day-year-no-comma",
+      "text": "The date of March 4 1932 was fun",
+      "expect": {
+        "spans": [
+          {
+            "start": 12,
+            "end": 24,
+            "type": "date",
+            "text": "March 4 1932"
+          }
+        ],
+        "filtered_text": "The date of {{{REDACTED-date}}} was fun"
+      },
+      "rationale": [
+        "A month-day-year with no comma."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "date/in-legal-sentence",
+      "text": "That on July 3, 2012 an involuntary petition on behalf of FKAAHS, Inc. fka Aire",
+      "expect": {
+        "spans": [
+          {
+            "start": 8,
+            "end": 20,
+            "type": "date",
+            "text": "July 3, 2012"
+          }
+        ],
+        "filtered_text": "That on {{{REDACTED-date}}} an involuntary petition on behalf of FKAAHS, Inc. fka Aire"
+      },
+      "rationale": [
+        "A date inside a longer sentence containing a company name."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "date/in-sentence-with-name",
+      "text": "On August 22, 2012, Plaintiff, Wendy J. Christophersen, was appointed as interim",
+      "expect": {
+        "spans": [
+          {
+            "start": 3,
+            "end": 18,
+            "type": "date",
+            "text": "August 22, 2012"
+          }
+        ],
+        "filtered_text": "On {{{REDACTED-date}}}, Plaintiff, Wendy J. Christophersen, was appointed as interim"
+      },
+      "rationale": [
+        "A date followed by a personal name, which must not extend the span."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "date/month-year-in-clinical-note",
+      "text": "Owns and drives his own vehicle but states he has not driven his car since last October 2009.",
+      "expect": {
+        "spans": [
+          {
+            "start": 80,
+            "end": 92,
+            "type": "date",
+            "text": "October 2009"
+          }
+        ],
+        "filtered_text": "Owns and drives his own vehicle but states he has not driven his car since last {{{REDACTED-date}}}."
+      },
+      "rationale": [
+        "A month-and-year reference inside a clinical narrative."
+      ],
+      "since": "0.1.0"
+    }
+  ]
+}

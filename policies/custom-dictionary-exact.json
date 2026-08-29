@@ -1,0 +1,13 @@
+{
+  "name": "custom-dictionary-exact",
+  "identifiers": {
+    "dictionaries": [
+      {
+        "classification": "project-codename",
+        "terms": ["Bluebird", "Redwood", "Harrier"],
+        "fuzzy": false,
+        "customFilterStrategies": [ { "strategy": "REDACT" } ]
+      }
+    ]
+  }
+}

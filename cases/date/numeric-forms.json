@@ -1,0 +1,276 @@
+{
+  "schema": 1,
+  "policy": "policies/date-redact.json",
+  "tags": [
+    "regex",
+    "date"
+  ],
+  "cases": [
+    {
+      "id": "date/iso-8601",
+      "text": "2000-01-01",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 10,
+            "type": "date",
+            "text": "2000-01-01"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-date}}}"
+      },
+      "rationale": [
+        "The ISO 8601 form."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "date/iso-8601-year-end",
+      "text": "1999-12-31",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 10,
+            "type": "date",
+            "text": "1999-12-31"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-date}}}"
+      },
+      "rationale": [
+        "A second ISO date."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "date/two-digit-day-month-year-hyphen",
+      "text": "12-05-2014",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 10,
+            "type": "date",
+            "text": "12-05-2014"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-date}}}"
+      },
+      "rationale": [
+        "A hyphenated numeric date."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "date/single-digit-month-and-day",
+      "text": "2-8-2019",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 8,
+            "type": "date",
+            "text": "2-8-2019"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-date}}}"
+      },
+      "rationale": [
+        "Single-digit month and day with a four-digit year."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "date/single-digit-month",
+      "text": "2-15-2019",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 9,
+            "type": "date",
+            "text": "2-15-2019"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-date}}}"
+      },
+      "rationale": [
+        "Single-digit month with a two-digit day."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "date/two-digit-year",
+      "text": "02-15-19",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 8,
+            "type": "date",
+            "text": "02-15-19"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-date}}}"
+      },
+      "rationale": [
+        "A two-digit year."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "date/slash-separated-four-digit-year",
+      "text": "25/12/1980",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 10,
+            "type": "date",
+            "text": "25/12/1980"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-date}}}"
+      },
+      "rationale": [
+        "Slash-separated day-month-year."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "date/hyphen-separated-four-digit-year",
+      "text": "25-12-1980",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 10,
+            "type": "date",
+            "text": "25-12-1980"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-date}}}"
+      },
+      "rationale": [
+        "The same date hyphen-separated."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "date/dot-separated",
+      "text": "25.12.1980",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 10,
+            "type": "date",
+            "text": "25.12.1980"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-date}}}"
+      },
+      "rationale": [
+        "The same date dot-separated, common in European documents."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "date/slash-separated-two-digit-year",
+      "text": "25/12/80",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 8,
+            "type": "date",
+            "text": "25/12/80"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-date}}}"
+      },
+      "rationale": [
+        "Slash-separated with a two-digit year."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "date/ambiguous-day-month-order",
+      "text": "03/04/1981",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 10,
+            "type": "date",
+            "text": "03/04/1981"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-date}}}"
+      },
+      "rationale": [
+        "03/04/1981 is ambiguous between March 4 and 3 April. Pinned to record that the filter does not attempt to disambiguate; it redacts either way, which is the safe behaviour for redaction."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "date/us-month-first",
+      "text": "12/25/1980",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 10,
+            "type": "date",
+            "text": "12/25/1980"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-date}}}"
+      },
+      "rationale": [
+        "An unambiguous US-order date."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "date/slash-date-with-time",
+      "text": "Entered 06/16/20 11:55:37,",
+      "expect": {
+        "spans": [
+          {
+            "start": 8,
+            "end": 16,
+            "type": "date",
+            "text": "06/16/20"
+          }
+        ],
+        "filtered_text": "Entered {{{REDACTED-date}}} 11:55:37,"
+      },
+      "rationale": [
+        "A slash date followed by a time; only the date is this filter's span."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "date/month-year-numeric",
+      "text": "The good news is everywhere we go it is that way but this 09-2021 be on top of that.",
+      "expect": {
+        "spans": [
+          {
+            "start": 58,
+            "end": 65,
+            "type": "date",
+            "text": "09-2021"
+          }
+        ],
+        "filtered_text": "The good news is everywhere we go it is that way but this {{{REDACTED-date}}} be on top of that."
+      },
+      "rationale": [
+        "A numeric month-year with no day."
+      ],
+      "since": "0.1.0"
+    }
+  ]
+}

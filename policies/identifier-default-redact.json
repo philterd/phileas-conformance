@@ -1,0 +1,13 @@
+{
+  "name": "identifier-default-redact",
+  "identifiers": {
+    "identifiers": [
+      {
+        "classification": "internal-id",
+        "pattern": "\\b[A-Z0-9_-]{6,}\\b",
+        "caseSensitive": true,
+        "identifierFilterStrategies": [ { "strategy": "REDACT" } ]
+      }
+    ]
+  }
+}

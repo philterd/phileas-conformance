@@ -1,0 +1,13 @@
+{
+  "name": "multi-filter-redact",
+  "identifiers": {
+    "ssn": { "ssnFilterStrategies": [ { "strategy": "REDACT" } ] },
+    "emailAddress": { "emailAddressFilterStrategies": [ { "strategy": "REDACT" } ] },
+    "phoneNumber": { "phoneNumberFilterStrategies": [ { "strategy": "REDACT" } ] },
+    "date": { "dateFilterStrategies": [ { "strategy": "REDACT" } ] },
+    "zipCode": { "zipCodeFilterStrategy": [ { "strategy": "REDACT" } ] },
+    "creditCard": { "creditCardFilterStrategies": [ { "strategy": "REDACT" } ] },
+    "ein": { "einFilterStrategies": [ { "strategy": "REDACT" } ] },
+    "ipAddress": { "ipAddressFilterStrategies": [ { "strategy": "REDACT" } ] }
+  }
+}

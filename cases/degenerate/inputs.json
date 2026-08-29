@@ -1,0 +1,72 @@
+{
+  "schema": 1,
+  "policy": "policies/multi-filter-redact.json",
+  "tags": [
+    "degenerate",
+    "integration"
+  ],
+  "cases": [
+    {
+      "id": "degenerate/whitespace-only",
+      "text": "   ",
+      "expect": {
+        "spans": [],
+        "filtered_text": "   "
+      },
+      "rationale": [
+        "Whitespace alone must produce no spans and come back unchanged."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "degenerate/already-redacted-text",
+      "text": "{{{REDACTED-ssn}}}",
+      "expect": {
+        "spans": [],
+        "filtered_text": "{{{REDACTED-ssn}}}"
+      },
+      "rationale": [
+        "Filtering already-redacted output must be idempotent: the replacement token itself must not be detected as PII."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "degenerate/mixed-redacted-and-live",
+      "text": "Already {{{REDACTED-ssn}}} and 123-45-6789",
+      "expect": {
+        "spans": [
+          {
+            "start": 31,
+            "end": 42,
+            "type": "ssn",
+            "text": "123-45-6789"
+          }
+        ],
+        "filtered_text": "Already {{{REDACTED-ssn}}} and {{{REDACTED-ssn}}}"
+      },
+      "rationale": [
+        "A partially redacted document must have the remaining live value redacted without disturbing the existing token."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "degenerate/pii-at-offset-zero",
+      "text": "123-45-6789",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 11,
+            "type": "ssn",
+            "text": "123-45-6789"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-ssn}}}"
+      },
+      "rationale": [
+        "PII as the entire document, starting at offset zero, with nothing before or after."
+      ],
+      "since": "0.1.0"
+    }
+  ]
+}

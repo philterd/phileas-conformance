@@ -1,0 +1,187 @@
+{
+  "schema": 1,
+  "policy": "policies/phone-number-redact.json",
+  "tags": [
+    "regex",
+    "phone-number"
+  ],
+  "cases": [
+    {
+      "id": "phone-number/parenthesised-area-code",
+      "text": "the number is (123) 456-7890.",
+      "expect": {
+        "spans": [
+          {
+            "start": 14,
+            "end": 28,
+            "type": "phone-number",
+            "text": "(123) 456-7890"
+          }
+        ],
+        "filtered_text": "the number is {{{REDACTED-phone-number}}}."
+      },
+      "rationale": [
+        "The common US format with a parenthesised area code."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "phone-number/two-in-one-document",
+      "text": "the number is (123) 456-7890 and (123) 456-7890.",
+      "expect": {
+        "spans": [
+          {
+            "start": 14,
+            "end": 28,
+            "type": "phone-number",
+            "text": "(123) 456-7890"
+          },
+          {
+            "start": 33,
+            "end": 47,
+            "type": "phone-number",
+            "text": "(123) 456-7890"
+          }
+        ],
+        "filtered_text": "the number is {{{REDACTED-phone-number}}} and {{{REDACTED-phone-number}}}."
+      },
+      "rationale": [
+        "Two numbers in one document produce two spans."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "phone-number/hyphenated",
+      "text": "the number is 123-456-7890.",
+      "expect": {
+        "spans": [
+          {
+            "start": 14,
+            "end": 26,
+            "type": "phone-number",
+            "text": "123-456-7890"
+          }
+        ],
+        "filtered_text": "the number is {{{REDACTED-phone-number}}}."
+      },
+      "rationale": [
+        "A hyphenated US number with no parentheses."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "phone-number/hyphenated-mid-sentence",
+      "text": "the number is 123-456-7890 and he was ok.",
+      "expect": {
+        "spans": [
+          {
+            "start": 14,
+            "end": 26,
+            "type": "phone-number",
+            "text": "123-456-7890"
+          }
+        ],
+        "filtered_text": "the number is {{{REDACTED-phone-number}}} and he was ok."
+      },
+      "rationale": [
+        "The same followed by more text."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "phone-number/spaces-inside-parentheses",
+      "text": "the number is ( 800 ) 123-4567 and he was ok.",
+      "expect": {
+        "spans": [
+          {
+            "start": 14,
+            "end": 30,
+            "type": "phone-number",
+            "text": "( 800 ) 123-4567"
+          }
+        ],
+        "filtered_text": "the number is {{{REDACTED-phone-number}}} and he was ok."
+      },
+      "rationale": [
+        "Spaces inside the parentheses, as produced by some form exports."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "phone-number/with-spaced-extension",
+      "text": "the number is (800) 123-4567 x532 and he was ok.",
+      "expect": {
+        "spans": [
+          {
+            "start": 14,
+            "end": 33,
+            "type": "phone-number",
+            "text": "(800) 123-4567 x532"
+          }
+        ],
+        "filtered_text": "the number is {{{REDACTED-phone-number}}} and he was ok."
+      },
+      "rationale": [
+        "A number with a space-separated x extension; the extension is part of the span."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "phone-number/with-attached-extension",
+      "text": "the number is (800) 123-4567x532 and he was ok.",
+      "expect": {
+        "spans": [
+          {
+            "start": 14,
+            "end": 32,
+            "type": "phone-number",
+            "text": "(800) 123-4567x532"
+          }
+        ],
+        "filtered_text": "the number is {{{REDACTED-phone-number}}} and he was ok."
+      },
+      "rationale": [
+        "The same extension written with no space."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "phone-number/e164-country-code",
+      "text": "the number is +1 202-555-0182.",
+      "expect": {
+        "spans": [
+          {
+            "start": 14,
+            "end": 29,
+            "type": "phone-number",
+            "text": "+1 202-555-0182"
+          }
+        ],
+        "filtered_text": "the number is {{{REDACTED-phone-number}}}."
+      },
+      "rationale": [
+        "A +1 country code prefix."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "phone-number/in-mixed-pii-document",
+      "text": "George Washington was president and his SSN was 123-45-6789. His phone number was (555) 123-9988 and he lived in 20001.",
+      "expect": {
+        "spans": [
+          {
+            "start": 82,
+            "end": 96,
+            "type": "phone-number",
+            "text": "(555) 123-9988"
+          }
+        ],
+        "filtered_text": "George Washington was president and his SSN was 123-45-6789. His phone number was {{{REDACTED-phone-number}}} and he lived in 20001."
+      },
+      "rationale": [
+        "A phone number in a document that also contains an SSN and a ZIP, so the filters must not interfere."
+      ],
+      "since": "0.1.0"
+    }
+  ]
+}

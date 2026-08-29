@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "policy": "policies/ssn-condition-context-other.json",
+  "tags": [
+    "conditions",
+    "policy"
+  ],
+  "cases": [
+    {
+      "id": "conditions/context-not-satisfied",
+      "text": "ssn 123-45-6789 and 555-55-1234",
+      "expect": {
+        "spans": [
+          {
+            "start": 4,
+            "end": 15,
+            "type": "ssn",
+            "text": "123-45-6789"
+          },
+          {
+            "start": 20,
+            "end": 31,
+            "type": "ssn",
+            "text": "555-55-1234"
+          }
+        ],
+        "filtered_text": "ssn *********** and ***********"
+      },
+      "rationale": [
+        "The same condition against a context that does not match, so every span falls through to MASK.",
+        "Together with the satisfied case this pins that context is compared against the value passed to filter(), not against anything in the document."
+      ],
+      "since": "0.1.0"
+    }
+  ]
+}

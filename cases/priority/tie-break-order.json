@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "policy": "policies/identifier-priority-high-first.json",
+  "tags": [
+    "priority",
+    "policy"
+  ],
+  "cases": [
+    {
+      "id": "priority/higher-wins-listed-first",
+      "text": "token AB123456 here",
+      "expect": {
+        "spans": [
+          {
+            "start": 6,
+            "end": 14,
+            "type": "id",
+            "text": "AB123456"
+          }
+        ],
+        "filtered_text": "token HIGH here"
+      },
+      "rationale": [
+        "The same two entries in the opposite order produce the same result, so resolution does not depend on declaration order.",
+        "Order dependence is an easy thing to introduce when porting, and it would make output non-reproducible across implementations."
+      ],
+      "since": "0.1.0"
+    }
+  ]
+}

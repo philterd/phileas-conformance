@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "policy": "policies/ssn-redact.json",
+  "tags": [
+    "adjacency",
+    "integration",
+    "leak"
+  ],
+  "cases": [
+    {
+      "id": "adjacency/unseparated-pair",
+      "text": "123-45-6789123-45-6789",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 11,
+            "type": "ssn",
+            "text": "123-45-6789"
+          },
+          {
+            "start": 11,
+            "end": 22,
+            "type": "ssn",
+            "text": "123-45-6789"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-ssn}}}{{{REDACTED-ssn}}}"
+      },
+      "rationale": [
+        "Two SSNs written with no separator must both be redacted, leaving no digits behind.",
+        "phileas currently matches only the fragment [4,14) that straddles the pair and emits '123-{{{REDACTED-ssn}}}-45-6789', so real SSN digits survive redaction. See philterd/phileas#343.",
+        "Separating the same two values with a space or comma works, so this is specific to unseparated values."
+      ],
+      "since": "0.1.0"
+    }
+  ]
+}

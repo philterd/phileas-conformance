@@ -1,0 +1,12 @@
+{
+  "name": "email-address-redact",
+  "identifiers": {
+    "emailAddress": {
+      "emailAddressFilterStrategies": [
+        {
+          "strategy": "REDACT"
+        }
+      ]
+    }
+  }
+}

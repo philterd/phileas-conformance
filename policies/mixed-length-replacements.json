@@ -1,0 +1,29 @@
+{
+  "name": "mixed-length-replacements",
+  "identifiers": {
+    "ssn": {
+      "ssnFilterStrategies": [
+        {
+          "strategy": "LAST_4"
+        }
+      ]
+    },
+    "emailAddress": {
+      "emailAddressFilterStrategies": [
+        {
+          "strategy": "MASK",
+          "maskCharacter": "*",
+          "maskLength": "same"
+        }
+      ]
+    },
+    "phoneNumber": {
+      "phoneNumberFilterStrategies": [
+        {
+          "strategy": "STATIC_REPLACE",
+          "staticReplacement": "<PHONE NUMBER REMOVED BY POLICY>"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "schema": 1,
+  "policy": "policies/state-abbreviation-redact.json",
+  "tags": [
+    "regex",
+    "state-abbreviation"
+  ],
+  "cases": [
+    {
+      "id": "state-abbreviation/uppercase",
+      "text": "The patient is from WV.",
+      "expect": {
+        "spans": [
+          {
+            "start": 20,
+            "end": 22,
+            "type": "state-abbreviation",
+            "text": "WV"
+          }
+        ],
+        "filtered_text": "The patient is from {{{REDACTED-state-abbreviation}}}."
+      },
+      "rationale": [
+        "A two-letter state abbreviation at the end of a sentence; the period stays outside the span."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "state-abbreviation/lowercase",
+      "text": "The patient is from wv.",
+      "expect": {
+        "spans": [
+          {
+            "start": 20,
+            "end": 22,
+            "type": "state-abbreviation",
+            "text": "wv"
+          }
+        ],
+        "filtered_text": "The patient is from {{{REDACTED-state-abbreviation}}}."
+      },
+      "rationale": [
+        "Lowercase abbreviations match too."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "state-abbreviation/mid-sentence",
+      "text": "The patient is from WV and moved away.",
+      "expect": {
+        "spans": [
+          {
+            "start": 20,
+            "end": 22,
+            "type": "state-abbreviation",
+            "text": "WV"
+          }
+        ],
+        "filtered_text": "The patient is from {{{REDACTED-state-abbreviation}}} and moved away."
+      },
+      "rationale": [
+        "An abbreviation followed by more text."
+      ],
+      "since": "0.1.0"
+    }
+  ]
+}

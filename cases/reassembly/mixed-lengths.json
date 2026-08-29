@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "policy": "policies/mixed-length-replacements.json",
+  "tags": [
+    "reassembly",
+    "integration"
+  ],
+  "cases": [
+    {
+      "id": "reassembly/shorter-same-and-longer",
+      "text": "SSN 123-45-6789, email jane.doe@example.com, phone (555) 123-9988, done.",
+      "expect": {
+        "spans": [
+          {
+            "start": 4,
+            "end": 15,
+            "type": "ssn",
+            "text": "123-45-6789"
+          },
+          {
+            "start": 23,
+            "end": 43,
+            "type": "email-address",
+            "text": "jane.doe@example.com"
+          },
+          {
+            "start": 51,
+            "end": 65,
+            "type": "phone-number",
+            "text": "(555) 123-9988"
+          }
+        ],
+        "filtered_text": "SSN 6789, email ********************, phone <PHONE NUMBER REMOVED BY POLICY>, done."
+      },
+      "rationale": [
+        "Three spans whose replacements are shorter, the same length, and longer than the original.",
+        "Every span after the first is written at an offset that has already shifted, so this is where off-by-one errors in document reassembly surface. Nothing else in the corpus varies replacement length within one document."
+      ],
+      "since": "0.1.0"
+    }
+  ]
+}

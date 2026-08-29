@@ -1,0 +1,62 @@
+{
+  "schema": 1,
+  "policy": "policies/custom-dictionary-fuzzy.json",
+  "tags": [
+    "dictionary",
+    "custom-dictionary",
+    "fuzzy"
+  ],
+  "cases": [
+    {
+      "id": "custom-dictionary/fuzzy-exact-still-matches",
+      "text": "Bluebird exact",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 8,
+            "type": "custom-dictionary",
+            "text": "Bluebird"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-custom-dictionary}}} exact"
+      },
+      "rationale": [
+        "Enabling fuzzy matching must not stop exact terms matching."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "custom-dictionary/fuzzy-single-deletion",
+      "text": "Redwod is close enough",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 6,
+            "type": "custom-dictionary",
+            "text": "Redwod"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-custom-dictionary}}} is close enough"
+      },
+      "rationale": [
+        "A single deleted character matches at medium sensitivity."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "custom-dictionary/fuzzy-transposition-misses",
+      "text": "the project is Bluebrid and it ships",
+      "expect": {
+        "spans": [],
+        "filtered_text": "the project is Bluebrid and it ships"
+      },
+      "rationale": [
+        "A transposition does not match at medium sensitivity, even though a deletion does.",
+        "Pinned as current behaviour rather than as obviously correct: the edit-distance threshold and which edits count are exactly what drifts between implementations, so the corpus has to state it explicitly."
+      ],
+      "since": "0.1.0"
+    }
+  ]
+}

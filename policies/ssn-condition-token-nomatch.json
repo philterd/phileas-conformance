@@ -1,0 +1,19 @@
+{
+  "name": "ssn-condition-token-nomatch",
+  "identifiers": {
+    "ssn": {
+      "ssnFilterStrategies": [
+        {
+          "strategy": "STATIC_REPLACE",
+          "staticReplacement": "MATCHED",
+          "condition": "token == \"999-99-9999\""
+        },
+        {
+          "strategy": "MASK",
+          "maskCharacter": "*",
+          "maskLength": "same"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "policy": "policies/ssn-enabled.json",
+  "tags": [
+    "policy",
+    "integration"
+  ],
+  "cases": [
+    {
+      "id": "policy/filter-enabled",
+      "text": "the ssn is 123-45-6789.",
+      "expect": {
+        "spans": [
+          {
+            "start": 11,
+            "end": 22,
+            "type": "ssn",
+            "text": "123-45-6789"
+          }
+        ],
+        "filtered_text": "the ssn is {{{REDACTED-ssn}}}."
+      },
+      "rationale": [
+        "The positive half of the enabled-flag pair. The same document under an otherwise identical policy with enabled true must produce a span.",
+        "Without this, policy/filter-disabled would pass even if the SSN filter did not exist at all, which is the failure mode of any assertion that only expects nothing to happen."
+      ],
+      "since": "0.1.0"
+    }
+  ]
+}

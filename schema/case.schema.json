@@ -1,0 +1,181 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://philterd.ai/schemas/phileas-conformance/case.schema.json",
+  "title": "Phileas conformance case file",
+  "type": "object",
+  "required": [
+    "schema",
+    "cases"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema": {
+      "const": 1
+    },
+    "policy": {
+      "type": "string",
+      "description": "Default policy for every case in this file, relative to the corpus root.",
+      "pattern": "^policies/.+\\.json$"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "cases": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/case"
+      }
+    }
+  },
+  "$defs": {
+    "case": {
+      "type": "object",
+      "required": [
+        "id",
+        "text",
+        "expect",
+        "rationale",
+        "since"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Globally unique and permanently stable. Baselines reference it.",
+          "pattern": "^[a-z0-9-]+/[a-z0-9-]+$"
+        },
+        "text": {
+          "type": "string"
+        },
+        "policy": {
+          "type": "string",
+          "pattern": "^policies/.+\\.json$"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "since": {
+          "type": "string",
+          "description": "Corpus version that introduced the case; matches VERSION and the release tag.",
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+        },
+        "rationale": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          },
+          "description": "Why this is correct behavior, not what one implementation happens to do."
+        },
+        "expect": {
+          "type": "object",
+          "required": [
+            "spans"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "spans": {
+              "type": "array",
+              "description": "Exhaustive and sorted by start. An empty array asserts no detection.",
+              "items": {
+                "$ref": "#/$defs/span"
+              }
+            },
+            "filtered_text": {
+              "type": "string",
+              "description": "Only for policies using a deterministic strategy."
+            },
+            "properties": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "description": "Named properties of the replacements, for strategies whose exact output is not reproducible or not portable. Detection (spans) is still asserted exactly.",
+              "items": {
+                "enum": [
+                  "original-absent",
+                  "replacement-differs",
+                  "format-preserved",
+                  "consistent-within-document",
+                  "distinct-values-differ"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "span": {
+      "type": "object",
+      "required": [
+        "start",
+        "end",
+        "type",
+        "text"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "start": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "end": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "type": {
+          "type": "string",
+          "description": "Canonical FilterType wire name.",
+          "enum": [
+            "age",
+            "bank-routing-number",
+            "bitcoin-address",
+            "city",
+            "county",
+            "credit-card",
+            "currency",
+            "custom-dictionary",
+            "date",
+            "drivers-license-number",
+            "ein",
+            "email-address",
+            "first-name",
+            "hospital",
+            "hospital-abbreviation",
+            "iban-code",
+            "id",
+            "ip-address",
+            "mac-address",
+            "medical-condition",
+            "other",
+            "passport-number",
+            "person",
+            "pheye",
+            "phone-number",
+            "phone-number-extension",
+            "physician-name",
+            "section",
+            "ssn",
+            "state",
+            "state-abbreviation",
+            "street-address",
+            "surname",
+            "tracking-number",
+            "url",
+            "vin",
+            "zip-code"
+          ]
+        },
+        "text": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

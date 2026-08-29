@@ -1,0 +1,67 @@
+{
+  "schema": 1,
+  "policy": "policies/bank-routing-number-redact.json",
+  "tags": [
+    "regex",
+    "bank-routing-number"
+  ],
+  "cases": [
+    {
+      "id": "bank-routing-number/in-sentence",
+      "text": "the routing number is 111000025 patient is 3.5years old.",
+      "expect": {
+        "spans": [
+          {
+            "start": 22,
+            "end": 31,
+            "type": "bank-routing-number",
+            "text": "111000025"
+          }
+        ],
+        "filtered_text": "the routing number is {{{REDACTED-bank-routing-number}}} patient is 3.5years old."
+      },
+      "rationale": [
+        "A valid ABA routing number inside a longer sentence."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "bank-routing-number/end-of-document",
+      "text": "the routing number is 111000025",
+      "expect": {
+        "spans": [
+          {
+            "start": 22,
+            "end": 31,
+            "type": "bank-routing-number",
+            "text": "111000025"
+          }
+        ],
+        "filtered_text": "the routing number is {{{REDACTED-bank-routing-number}}}"
+      },
+      "rationale": [
+        "The same number at end of document."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "bank-routing-number/bare",
+      "text": "111000025",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 9,
+            "type": "bank-routing-number",
+            "text": "111000025"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-bank-routing-number}}}"
+      },
+      "rationale": [
+        "A routing number as the entire document."
+      ],
+      "since": "0.1.0"
+    }
+  ]
+}

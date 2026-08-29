@@ -1,0 +1,12 @@
+{
+  "name": "bitcoin-address-redact",
+  "identifiers": {
+    "bitcoinAddress": {
+      "bitcoinFilterStrategies": [
+        {
+          "strategy": "REDACT"
+        }
+      ]
+    }
+  }
+}

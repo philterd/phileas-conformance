@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "policy": "policies/currency-redact.json",
+  "tags": [
+    "regex",
+    "currency",
+    "negative"
+  ],
+  "cases": [
+    {
+      "id": "currency/negative-bare-numbers-in-prose",
+      "text": "In 2026, patient in room 402 had 3 tests.",
+      "expect": {
+        "spans": [],
+        "filtered_text": "In 2026, patient in room 402 had 3 tests."
+      },
+      "rationale": [
+        "A year, a room number and a count must not be read as currency; there is no symbol or code."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "currency/negative-words-containing-codes",
+      "text": "EUROPE and CANADA are regions.",
+      "expect": {
+        "spans": [],
+        "filtered_text": "EUROPE and CANADA are regions."
+      },
+      "rationale": [
+        "EUROPE and CANADA contain the letter sequences EUR and CAD but are words, not currency codes."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "currency/negative-code-attached-to-digits",
+      "text": "Model CAD100 or USD500 without space.",
+      "expect": {
+        "spans": [],
+        "filtered_text": "Model CAD100 or USD500 without space."
+      },
+      "rationale": [
+        "CAD100 with no separator is a model number, not an amount. This is the case that keeps part numbers out of currency results."
+      ],
+      "since": "0.1.0"
+    }
+  ]
+}

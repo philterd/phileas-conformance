@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "policy": "policies/ssn-static-replace.json",
+  "tags": [
+    "strategies"
+  ],
+  "cases": [
+    {
+      "id": "strategies/static-replacement",
+      "text": "the ssn is 123-45-6789.",
+      "expect": {
+        "spans": [
+          {
+            "start": 11,
+            "end": 22,
+            "type": "ssn",
+            "text": "123-45-6789"
+          }
+        ],
+        "filtered_text": "the ssn is REDACTED."
+      },
+      "rationale": [
+        "STATIC_REPLACE substitutes a fixed string from the policy, regardless of the matched length."
+      ],
+      "since": "0.1.0"
+    }
+  ]
+}

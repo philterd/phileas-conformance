@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "policy": "policies/mac-address-redact.json",
+  "tags": [
+    "regex",
+    "mac-address",
+    "negative"
+  ],
+  "cases": [
+    {
+      "id": "mac-address/negative-five-octets",
+      "text": "mac 00:14:22:04:25",
+      "expect": {
+        "spans": [],
+        "filtered_text": "mac 00:14:22:04:25"
+      },
+      "rationale": [
+        "Five octets is not a MAC address. Pins the octet count."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "mac-address/negative-dot-separated",
+      "text": "mac 00.14.22.04.25.37",
+      "expect": {
+        "spans": [],
+        "filtered_text": "mac 00.14.22.04.25.37"
+      },
+      "rationale": [
+        "Dots are not a MAC separator, and allowing them would collide with IPv4-like text."
+      ],
+      "since": "0.1.0"
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "policy": "policies/phone-number-redact.json",
+  "tags": [
+    "regex",
+    "phone-number",
+    "negative"
+  ],
+  "cases": [
+    {
+      "id": "phone-number/negative-uk-national-format",
+      "text": "the number is 020 7946 0958.",
+      "expect": {
+        "spans": [],
+        "filtered_text": "the number is 020 7946 0958."
+      },
+      "rationale": [
+        "A UK national-format number is not matched. Pinned as current scope, not as correct: this is the case to revisit if international coverage is added."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "phone-number/negative-country-code-letters",
+      "text": "GB",
+      "expect": {
+        "spans": [],
+        "filtered_text": "GB"
+      },
+      "rationale": [
+        "A two-letter country code is not a phone number."
+      ],
+      "since": "0.1.0"
+    }
+  ]
+}

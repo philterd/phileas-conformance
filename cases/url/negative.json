@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "policy": "policies/url-redact.json",
+  "tags": [
+    "regex",
+    "url",
+    "negative"
+  ],
+  "cases": [
+    {
+      "id": "url/negative-bare-hostname",
+      "text": "the page is myhomepage.com.",
+      "expect": {
+        "spans": [],
+        "filtered_text": "the page is myhomepage.com."
+      },
+      "rationale": [
+        "A bare hostname with no scheme and no www is not treated as a URL, which keeps ordinary prose containing dotted words from matching."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "url/negative-dotted-word",
+      "text": "the page is test.ok new sentence",
+      "expect": {
+        "spans": [],
+        "filtered_text": "the page is test.ok new sentence"
+      },
+      "rationale": [
+        "'test.ok' is a dotted word, not a URL."
+      ],
+      "since": "0.1.0"
+    }
+  ]
+}

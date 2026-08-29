@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "policy": "policies/drivers-license-number-redact.json",
+  "tags": [
+    "regex",
+    "drivers-license-number"
+  ],
+  "cases": [
+    {
+      "id": "drivers-license-number/all-digits",
+      "text": "the number is 123456789.",
+      "expect": {
+        "spans": [
+          {
+            "start": 14,
+            "end": 23,
+            "type": "drivers-license-number",
+            "text": "123456789"
+          }
+        ],
+        "filtered_text": "the number is {{{REDACTED-drivers-license-number}}}."
+      },
+      "rationale": [
+        "A nine-digit licence number."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "drivers-license-number/letter-prefixed",
+      "text": "the license is A123456789012.",
+      "expect": {
+        "spans": [
+          {
+            "start": 15,
+            "end": 28,
+            "type": "drivers-license-number",
+            "text": "A123456789012"
+          }
+        ],
+        "filtered_text": "the license is {{{REDACTED-drivers-license-number}}}."
+      },
+      "rationale": [
+        "A letter followed by digits, the format several states use."
+      ],
+      "since": "0.1.0"
+    }
+  ]
+}

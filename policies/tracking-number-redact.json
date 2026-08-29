@@ -1,0 +1,12 @@
+{
+  "name": "tracking-number-redact",
+  "identifiers": {
+    "trackingNumber": {
+      "trackingNumberFilterStrategies": [
+        {
+          "strategy": "REDACT"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "policy": "policies/ssn-policy-ignored-pattern.json",
+  "tags": [
+    "ignored",
+    "policy"
+  ],
+  "cases": [
+    {
+      "id": "ignored/policy-level-pattern",
+      "text": "ssn 123-45-6789 and 555-55-1234",
+      "expect": {
+        "spans": [
+          {
+            "start": 4,
+            "end": 15,
+            "type": "ssn",
+            "text": "123-45-6789"
+          }
+        ],
+        "filtered_text": "ssn {{{REDACTED-ssn}}} and 555-55-1234"
+      },
+      "rationale": [
+        "An ignoredPatterns entry suppresses everything it matches. Here it covers the 5xx value and leaves the other redacted.",
+        "The pattern is a regex, so this also pins that the dialect is compatible enough for a simple character-class pattern."
+      ],
+      "since": "0.1.0"
+    }
+  ]
+}

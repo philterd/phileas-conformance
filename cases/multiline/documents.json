@@ -1,0 +1,92 @@
+{
+  "schema": 1,
+  "policy": "policies/multi-filter-redact.json",
+  "tags": [
+    "multiline",
+    "integration"
+  ],
+  "cases": [
+    {
+      "id": "multiline/labelled-fields",
+      "text": "Name: Jane\nSSN: 123-45-6789\nZIP: 90210",
+      "expect": {
+        "spans": [
+          {
+            "start": 16,
+            "end": 27,
+            "type": "ssn",
+            "text": "123-45-6789"
+          },
+          {
+            "start": 33,
+            "end": 38,
+            "type": "zip-code",
+            "text": "90210"
+          }
+        ],
+        "filtered_text": "Name: Jane\nSSN: {{{REDACTED-ssn}}}\nZIP: {{{REDACTED-zip-code}}}"
+      },
+      "rationale": [
+        "A record with one field per line. Offsets count the newline, and two filters fire on different lines."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "multiline/crlf-line-endings",
+      "text": "Line one\r\nSSN 123-45-6789\r\nLine three",
+      "expect": {
+        "spans": [
+          {
+            "start": 14,
+            "end": 25,
+            "type": "ssn",
+            "text": "123-45-6789"
+          }
+        ],
+        "filtered_text": "Line one\r\nSSN {{{REDACTED-ssn}}}\r\nLine three"
+      },
+      "rationale": [
+        "CRLF endings are two characters, so a Windows-produced document puts the value one offset further along than the LF equivalent."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "multiline/value-on-next-line",
+      "text": "SSN\n123-45-6789",
+      "expect": {
+        "spans": [
+          {
+            "start": 4,
+            "end": 15,
+            "type": "ssn",
+            "text": "123-45-6789"
+          }
+        ],
+        "filtered_text": "SSN\n{{{REDACTED-ssn}}}"
+      },
+      "rationale": [
+        "A label and its value split across a line break."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "multiline/tab-separated",
+      "text": "tab\tSSN\t123-45-6789",
+      "expect": {
+        "spans": [
+          {
+            "start": 8,
+            "end": 19,
+            "type": "ssn",
+            "text": "123-45-6789"
+          }
+        ],
+        "filtered_text": "tab\tSSN\t{{{REDACTED-ssn}}}"
+      },
+      "rationale": [
+        "Tab separators, as produced by TSV exports."
+      ],
+      "since": "0.1.0"
+    }
+  ]
+}

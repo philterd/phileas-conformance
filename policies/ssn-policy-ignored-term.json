@@ -1,0 +1,20 @@
+{
+  "name": "ssn-policy-ignored-term",
+  "ignored": [
+    {
+      "name": "known-test-value",
+      "terms": [
+        "123-45-6789"
+      ]
+    }
+  ],
+  "identifiers": {
+    "ssn": {
+      "ssnFilterStrategies": [
+        {
+          "strategy": "REDACT"
+        }
+      ]
+    }
+  }
+}

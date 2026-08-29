@@ -1,0 +1,29 @@
+{
+  "name": "identifier-priority-low-first",
+  "identifiers": {
+    "identifiers": [
+      {
+        "classification": "low",
+        "pattern": "\\bAB[0-9]{6}\\b",
+        "priority": 1,
+        "identifierFilterStrategies": [
+          {
+            "strategy": "STATIC_REPLACE",
+            "staticReplacement": "LOW"
+          }
+        ]
+      },
+      {
+        "classification": "high",
+        "pattern": "\\bAB[0-9]{6}\\b",
+        "priority": 9,
+        "identifierFilterStrategies": [
+          {
+            "strategy": "STATIC_REPLACE",
+            "staticReplacement": "HIGH"
+          }
+        ]
+      }
+    ]
+  }
+}

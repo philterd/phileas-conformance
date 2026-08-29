@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "policy": "policies/state-abbreviation-redact.json",
+  "tags": [
+    "regex",
+    "state-abbreviation",
+    "negative"
+  ],
+  "cases": [
+    {
+      "id": "state-abbreviation/negative-not-a-state",
+      "text": "The patient is from ZZ.",
+      "expect": {
+        "spans": [],
+        "filtered_text": "The patient is from ZZ."
+      },
+      "rationale": [
+        "ZZ is not a state abbreviation; the filter is backed by a fixed list rather than any two letters."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "state-abbreviation/negative-inside-word",
+      "text": "The patient is from Wverything.",
+      "expect": {
+        "spans": [],
+        "filtered_text": "The patient is from Wverything."
+      },
+      "rationale": [
+        "An abbreviation inside a longer word must not match."
+      ],
+      "since": "0.1.0"
+    }
+  ]
+}

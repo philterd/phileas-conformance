@@ -1,0 +1,59 @@
+{
+  "schema": 1,
+  "policy": "policies/zip-code-redact.json",
+  "tags": [
+    "regex",
+    "zip-code",
+    "negative"
+  ],
+  "cases": [
+    {
+      "id": "zip-code/negative-letters-appended",
+      "text": "the zip is 90210abd.",
+      "expect": {
+        "spans": [],
+        "filtered_text": "the zip is 90210abd."
+      },
+      "rationale": [
+        "Letters immediately after the digits mean this is not a ZIP."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "zip-code/negative-seven-digits",
+      "text": "George Washington was president and his ssn was 123-45-6789 and he lived in 9021032.",
+      "expect": {
+        "spans": [],
+        "filtered_text": "George Washington was president and his ssn was 123-45-6789 and he lived in 9021032."
+      },
+      "rationale": [
+        "Seven digits is neither a ZIP nor a ZIP+4."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "zip-code/negative-four-digits",
+      "text": "zip 1234",
+      "expect": {
+        "spans": [],
+        "filtered_text": "zip 1234"
+      },
+      "rationale": [
+        "Four digits is not a ZIP."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "zip-code/negative-six-digits",
+      "text": "zip 123456",
+      "expect": {
+        "spans": [],
+        "filtered_text": "zip 123456"
+      },
+      "rationale": [
+        "Six digits is not a ZIP."
+      ],
+      "since": "0.1.0"
+    }
+  ]
+}

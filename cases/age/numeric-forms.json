@@ -1,0 +1,260 @@
+{
+  "schema": 1,
+  "policy": "policies/age-redact.json",
+  "tags": [
+    "regex",
+    "age"
+  ],
+  "cases": [
+    {
+      "id": "age/decimal-years-old",
+      "text": "the patient is 3.5years old.",
+      "expect": {
+        "spans": [
+          {
+            "start": 15,
+            "end": 27,
+            "type": "age",
+            "text": "3.5years old"
+          }
+        ],
+        "filtered_text": "the patient is {{{REDACTED-age}}}."
+      },
+      "rationale": [
+        "A decimal age with no space before the unit. Java's AgeFilterTest filter0/filter1 cover this.",
+        "The pattern also matches the shorter '3.5years', but the filter keeps only the longest span, so exactly one is expected."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "age/decimal-trailing-dot-yrs",
+      "text": "the patient age is 3.yrs.",
+      "expect": {
+        "spans": [
+          {
+            "start": 19,
+            "end": 24,
+            "type": "age",
+            "text": "3.yrs"
+          }
+        ],
+        "filtered_text": "the patient age is {{{REDACTED-age}}}."
+      },
+      "rationale": [
+        "A trailing dot in the numeric part ('3.') is accepted, because the number class is [0-9.]+ rather than a strict decimal."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "age/integer-yrs",
+      "text": "the patient age is 3yrs.",
+      "expect": {
+        "spans": [
+          {
+            "start": 19,
+            "end": 23,
+            "type": "age",
+            "text": "3yrs"
+          }
+        ],
+        "filtered_text": "the patient age is {{{REDACTED-age}}}."
+      },
+      "rationale": [
+        "Bare integer immediately followed by the abbreviated unit."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "age/decimal-yrs-old",
+      "text": "the patient is 3.5yrs old.",
+      "expect": {
+        "spans": [
+          {
+            "start": 15,
+            "end": 25,
+            "type": "age",
+            "text": "3.5yrs old"
+          }
+        ],
+        "filtered_text": "the patient is {{{REDACTED-age}}}."
+      },
+      "rationale": [
+        "Abbreviated unit plus the 'old' suffix, which extends the span past the unit."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "age/yrs-period-old",
+      "text": "the patient is 39yrs. old",
+      "expect": {
+        "spans": [
+          {
+            "start": 15,
+            "end": 25,
+            "type": "age",
+            "text": "39yrs. old"
+          }
+        ],
+        "filtered_text": "the patient is {{{REDACTED-age}}}"
+      },
+      "rationale": [
+        "An abbreviation period between unit and 'old' must not end the span."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "age/aged-integer",
+      "text": "she is aged 39",
+      "expect": {
+        "spans": [
+          {
+            "start": 7,
+            "end": 14,
+            "type": "age",
+            "text": "aged 39"
+          }
+        ],
+        "filtered_text": "she is {{{REDACTED-age}}}"
+      },
+      "rationale": [
+        "The 'aged' keyword form. The span covers the keyword as well as the value."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "age/age-integer",
+      "text": "she is age 39",
+      "expect": {
+        "spans": [
+          {
+            "start": 7,
+            "end": 13,
+            "type": "age",
+            "text": "age 39"
+          }
+        ],
+        "filtered_text": "she is {{{REDACTED-age}}}"
+      },
+      "rationale": [
+        "The 'age' keyword without the 'd' suffix."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "age/age-decimal",
+      "text": "she is age 39.5",
+      "expect": {
+        "spans": [
+          {
+            "start": 7,
+            "end": 15,
+            "type": "age",
+            "text": "age 39.5"
+          }
+        ],
+        "filtered_text": "she is {{{REDACTED-age}}}"
+      },
+      "rationale": [
+        "A decimal value after the 'age' keyword."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "age/yr-period-old-in-clinical-note",
+      "text": "Patient Timothy Hook is 72 Yr. old male lives alone.",
+      "expect": {
+        "spans": [
+          {
+            "start": 24,
+            "end": 34,
+            "type": "age",
+            "text": "72 Yr. old"
+          }
+        ],
+        "filtered_text": "Patient Timothy Hook is {{{REDACTED-age}}} male lives alone."
+      },
+      "rationale": [
+        "Mixed-case unit inside a longer clinical sentence: matching is case insensitive and must not run into surrounding words."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "age/yo-in-clinical-note",
+      "text": "Cari Morris is 75 yo female alert and oriented x’s3 with some mild memory loss.",
+      "expect": {
+        "spans": [
+          {
+            "start": 15,
+            "end": 20,
+            "type": "age",
+            "text": "75 yo"
+          }
+        ],
+        "filtered_text": "Cari Morris is {{{REDACTED-age}}} female alert and oriented x’s3 with some mild memory loss."
+      },
+      "rationale": [
+        "The 'yo' abbreviation inside a longer sentence containing a non-ASCII apostrophe and a stray digit.",
+        "Java's filter-level test asserts [15,21], which includes a trailing space produced by the unescaped dot in age pattern 1.",
+        "The service trims it, and the trimmed span is what Python and .NET produce, so the portable expectation is [15,20]."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "age/hyphenated-year-old",
+      "text": "She is a 22-year-old female",
+      "expect": {
+        "spans": [
+          {
+            "start": 9,
+            "end": 20,
+            "type": "age",
+            "text": "22-year-old"
+          }
+        ],
+        "filtered_text": "She is a {{{REDACTED-age}}} female"
+      },
+      "rationale": [
+        "The hyphenated adjectival form. The indefinite article before it must stay outside the span."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "age/y-slash-o",
+      "text": "patient is 61 y/o and",
+      "expect": {
+        "spans": [
+          {
+            "start": 11,
+            "end": 17,
+            "type": "age",
+            "text": "61 y/o"
+          }
+        ],
+        "filtered_text": "patient is {{{REDACTED-age}}} and"
+      },
+      "rationale": [
+        "The 'y/o' abbreviation, which needs its own pattern because of the slash."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "age/y-slash-o-three-digit",
+      "text": "patient is 161 y/o and",
+      "expect": {
+        "spans": [
+          {
+            "start": 11,
+            "end": 18,
+            "type": "age",
+            "text": "161 y/o"
+          }
+        ],
+        "filtered_text": "patient is {{{REDACTED-age}}} and"
+      },
+      "rationale": [
+        "Three-digit values are in range for the y/o pattern, which allows one to three digits."
+      ],
+      "since": "0.1.0"
+    }
+  ]
+}

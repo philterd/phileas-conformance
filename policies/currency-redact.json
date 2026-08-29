@@ -1,0 +1,12 @@
+{
+  "name": "currency-redact",
+  "identifiers": {
+    "currency": {
+      "currencyFilterStrategies": [
+        {
+          "strategy": "REDACT"
+        }
+      ]
+    }
+  }
+}

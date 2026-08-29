@@ -1,0 +1,124 @@
+{
+  "schema": 1,
+  "policy": "policies/currency-redact.json",
+  "tags": [
+    "regex",
+    "currency"
+  ],
+  "cases": [
+    {
+      "id": "currency/dollars-and-cents-spaced",
+      "text": "the drug cost is $35.53 .",
+      "expect": {
+        "spans": [
+          {
+            "start": 17,
+            "end": 23,
+            "type": "currency",
+            "text": "$35.53"
+          }
+        ],
+        "filtered_text": "the drug cost is {{{REDACTED-currency}}} ."
+      },
+      "rationale": [
+        "A dollar amount followed by a space then the sentence period."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "currency/dollars-and-cents",
+      "text": "the drug cost is $35.53.",
+      "expect": {
+        "spans": [
+          {
+            "start": 17,
+            "end": 23,
+            "type": "currency",
+            "text": "$35.53"
+          }
+        ],
+        "filtered_text": "the drug cost is {{{REDACTED-currency}}}."
+      },
+      "rationale": [
+        "The same amount ending the sentence, so the period is adjacent."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "currency/whole-dollars-with-cents",
+      "text": "the drug cost is $35.00.",
+      "expect": {
+        "spans": [
+          {
+            "start": 17,
+            "end": 23,
+            "type": "currency",
+            "text": "$35.00"
+          }
+        ],
+        "filtered_text": "the drug cost is {{{REDACTED-currency}}}."
+      },
+      "rationale": [
+        "A round amount written with explicit zero cents."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "currency/single-digit-dollars",
+      "text": "the drug cost is $3.00.",
+      "expect": {
+        "spans": [
+          {
+            "start": 17,
+            "end": 22,
+            "type": "currency",
+            "text": "$3.00"
+          }
+        ],
+        "filtered_text": "the drug cost is {{{REDACTED-currency}}}."
+      },
+      "rationale": [
+        "A single-digit dollar amount."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "currency/cents-only",
+      "text": "the drug cost is $.50.",
+      "expect": {
+        "spans": [
+          {
+            "start": 17,
+            "end": 21,
+            "type": "currency",
+            "text": "$.50"
+          }
+        ],
+        "filtered_text": "the drug cost is {{{REDACTED-currency}}}."
+      },
+      "rationale": [
+        "An amount below one dollar written with no leading zero."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "currency/no-cents",
+      "text": "the drug cost is $50.",
+      "expect": {
+        "spans": [
+          {
+            "start": 17,
+            "end": 20,
+            "type": "currency",
+            "text": "$50"
+          }
+        ],
+        "filtered_text": "the drug cost is {{{REDACTED-currency}}}."
+      },
+      "rationale": [
+        "A whole-dollar amount with no decimal part."
+      ],
+      "since": "0.1.0"
+    }
+  ]
+}

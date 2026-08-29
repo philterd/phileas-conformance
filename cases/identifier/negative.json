@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "policy": "policies/identifier-default-redact.json",
+  "tags": [
+    "identifier",
+    "negative"
+  ],
+  "cases": [
+    {
+      "id": "identifier/negative-too-short",
+      "text": "the id is AB473 in california.",
+      "expect": {
+        "spans": [],
+        "filtered_text": "the id is AB473 in california."
+      },
+      "rationale": [
+        "Five characters is below the six-character minimum in the default pattern."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "identifier/negative-lowercase",
+      "text": "the id is ab4736021 in california.",
+      "expect": {
+        "spans": [],
+        "filtered_text": "the id is ab4736021 in california."
+      },
+      "rationale": [
+        "The default pattern is uppercase-only and the policy sets caseSensitive, so a lowercase token does not match."
+      ],
+      "since": "0.1.0"
+    }
+  ]
+}

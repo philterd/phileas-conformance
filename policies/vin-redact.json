@@ -1,0 +1,12 @@
+{
+  "name": "vin-redact",
+  "identifiers": {
+    "vin": {
+      "vinFilterStrategies": [
+        {
+          "strategy": "REDACT"
+        }
+      ]
+    }
+  }
+}

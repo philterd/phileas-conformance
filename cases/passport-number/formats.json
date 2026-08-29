@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "policy": "policies/passport-number-redact.json",
+  "tags": [
+    "regex",
+    "passport-number"
+  ],
+  "cases": [
+    {
+      "id": "passport-number/nine-digit",
+      "text": "the passport number is 036001231.",
+      "expect": {
+        "spans": [
+          {
+            "start": 23,
+            "end": 32,
+            "type": "passport-number",
+            "text": "036001231"
+          }
+        ],
+        "filtered_text": "the passport number is {{{REDACTED-passport-number}}}."
+      },
+      "rationale": [
+        "A nine-digit US passport number."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "passport-number/nine-digit-leading-two",
+      "text": "the passport number is 223456789.",
+      "expect": {
+        "spans": [
+          {
+            "start": 23,
+            "end": 32,
+            "type": "passport-number",
+            "text": "223456789"
+          }
+        ],
+        "filtered_text": "the passport number is {{{REDACTED-passport-number}}}."
+      },
+      "rationale": [
+        "A second nine-digit number, confirming the leading digit is not constrained."
+      ],
+      "since": "0.1.0"
+    }
+  ]
+}

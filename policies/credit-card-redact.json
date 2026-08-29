@@ -1,0 +1,12 @@
+{
+  "name": "credit-card-redact",
+  "identifiers": {
+    "creditCard": {
+      "creditCardFilterStrategies": [
+        {
+          "strategy": "REDACT"
+        }
+      ]
+    }
+  }
+}

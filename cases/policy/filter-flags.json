@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "policy": "policies/ssn-disabled.json",
+  "tags": [
+    "policy",
+    "integration"
+  ],
+  "cases": [
+    {
+      "id": "policy/filter-disabled",
+      "text": "the ssn is 123-45-6789.",
+      "expect": {
+        "spans": [],
+        "filtered_text": "the ssn is 123-45-6789."
+      },
+      "rationale": [
+        "A filter with enabled set to false must produce no spans even though its strategies are configured and the text plainly matches.",
+        "This is policy semantics rather than pattern matching, which is exactly where three independent implementations can quietly disagree."
+      ],
+      "since": "0.1.0"
+    }
+  ]
+}

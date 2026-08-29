@@ -1,0 +1,67 @@
+{
+  "schema": 1,
+  "policy": "policies/identifier-default-redact.json",
+  "tags": [
+    "identifier"
+  ],
+  "cases": [
+    {
+      "id": "identifier/alphanumeric-token",
+      "text": "the id is AB4736021 in california.",
+      "expect": {
+        "spans": [
+          {
+            "start": 10,
+            "end": 19,
+            "type": "id",
+            "text": "AB4736021"
+          }
+        ],
+        "filtered_text": "the id is {{{REDACTED-id}}} in california."
+      },
+      "rationale": [
+        "The default identifier pattern matches runs of six or more uppercase letters, digits, underscores and hyphens.",
+        "The pattern is supplied in the policy, so this case carries its own configuration."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "identifier/hyphenated-token",
+      "text": "the id is AB473-6021 in california.",
+      "expect": {
+        "spans": [
+          {
+            "start": 10,
+            "end": 20,
+            "type": "id",
+            "text": "AB473-6021"
+          }
+        ],
+        "filtered_text": "the id is {{{REDACTED-id}}} in california."
+      },
+      "rationale": [
+        "A hyphen is inside the character class, so a hyphenated token is one identifier rather than two."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "identifier/underscored-token",
+      "text": "the id is AB473_6021 in california.",
+      "expect": {
+        "spans": [
+          {
+            "start": 10,
+            "end": 20,
+            "type": "id",
+            "text": "AB473_6021"
+          }
+        ],
+        "filtered_text": "the id is {{{REDACTED-id}}} in california."
+      },
+      "rationale": [
+        "Underscores likewise."
+      ],
+      "since": "0.1.0"
+    }
+  ]
+}

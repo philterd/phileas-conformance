@@ -1,0 +1,15 @@
+{
+  "name": "ssn-truncate",
+  "identifiers": {
+    "ssn": {
+      "ssnFilterStrategies": [
+        {
+          "strategy": "TRUNCATE",
+          "staticReplacement": "REDACTED",
+          "maskCharacter": "*",
+          "maskLength": "same"
+        }
+      ]
+    }
+  }
+}

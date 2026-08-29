@@ -1,0 +1,90 @@
+{
+  "schema": 1,
+  "policy": "policies/ssn-fpe-encrypt.json",
+  "tags": [
+    "crypto",
+    "fpe",
+    "strategies"
+  ],
+  "cases": [
+    {
+      "id": "crypto/fpe-preserves-format",
+      "text": "ssn 123456789 and 555551234 and 123456789 again",
+      "expect": {
+        "spans": [
+          {
+            "start": 4,
+            "end": 13,
+            "type": "ssn",
+            "text": "123456789"
+          },
+          {
+            "start": 18,
+            "end": 27,
+            "type": "ssn",
+            "text": "555551234"
+          },
+          {
+            "start": 32,
+            "end": 41,
+            "type": "ssn",
+            "text": "123456789"
+          }
+        ],
+        "filtered_text": "ssn 062697496 and 657924724 and 062697496 again",
+        "properties": [
+          "original-absent",
+          "replacement-differs",
+          "format-preserved",
+          "consistent-within-document",
+          "distinct-values-differ"
+        ]
+      },
+      "rationale": [
+        "Format-preserving encryption returns a value of the same shape, so a nine-digit value stays nine digits and downstream systems that validate the field still accept it.",
+        "The exact ciphertext is asserted as well as the properties. FF3-1 is specified in NIST SP 800-38G Rev 1, so the ciphertext is determined by the key, tweak, radix and plaintext, not by the implementation. Two implementations that disagree here cannot re-identify each other's output, which breaks the reversibility the encrypting strategies exist to provide. phileas uses io.github.mysto:ff3 with the key and tweak given in this case's policy.",
+        "Verified byte-identical across separate processes, so this is a stable expectation rather than a snapshot of one run."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "crypto/fpe-preserves-punctuation",
+      "text": "ssn 123-45-6789 and 555-55-1234 and 123-45-6789 again",
+      "expect": {
+        "spans": [
+          {
+            "start": 4,
+            "end": 15,
+            "type": "ssn",
+            "text": "123-45-6789"
+          },
+          {
+            "start": 20,
+            "end": 31,
+            "type": "ssn",
+            "text": "555-55-1234"
+          },
+          {
+            "start": 36,
+            "end": 47,
+            "type": "ssn",
+            "text": "123-45-6789"
+          }
+        ],
+        "filtered_text": "ssn 062-69-7496 and 657-92-4724 and 062-69-7496 again",
+        "properties": [
+          "original-absent",
+          "replacement-differs",
+          "format-preserved",
+          "consistent-within-document"
+        ]
+      },
+      "rationale": [
+        "A hyphenated value keeps its hyphens in the same positions, so only the digits are encrypted.",
+        "This is the case that fails if an implementation strips punctuation before encrypting and does not put it back.",
+        "The exact ciphertext is asserted alongside the properties, so a divergence in FF3 parameters is caught rather than passing silently."
+      ],
+      "since": "0.1.0"
+    }
+  ]
+}

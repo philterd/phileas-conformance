@@ -1,0 +1,12 @@
+{
+  "name": "street-address-redact",
+  "identifiers": {
+    "streetAddress": {
+      "streetAddressFilterStrategies": [
+        {
+          "strategy": "REDACT"
+        }
+      ]
+    }
+  }
+}

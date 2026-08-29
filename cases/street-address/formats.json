@@ -1,0 +1,295 @@
+{
+  "schema": 1,
+  "policy": "policies/street-address-redact.json",
+  "tags": [
+    "regex",
+    "street-address"
+  ],
+  "cases": [
+    {
+      "id": "street-address/number-name-abbreviated-type",
+      "text": "lived at 100 Main St",
+      "expect": {
+        "spans": [
+          {
+            "start": 9,
+            "end": 20,
+            "type": "street-address",
+            "text": "100 Main St"
+          }
+        ],
+        "filtered_text": "lived at {{{REDACTED-street-address}}}"
+      },
+      "rationale": [
+        "Number, name, and abbreviated street type."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "street-address/spelled-out-street-type",
+      "text": "lived at 1000 Main Street",
+      "expect": {
+        "spans": [
+          {
+            "start": 9,
+            "end": 25,
+            "type": "street-address",
+            "text": "1000 Main Street"
+          }
+        ],
+        "filtered_text": "lived at {{{REDACTED-street-address}}}"
+      },
+      "rationale": [
+        "The full word 'Street' rather than an abbreviation."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "street-address/abbreviated-direction",
+      "text": "lived at 100 S Main St",
+      "expect": {
+        "spans": [
+          {
+            "start": 9,
+            "end": 22,
+            "type": "street-address",
+            "text": "100 S Main St"
+          }
+        ],
+        "filtered_text": "lived at {{{REDACTED-street-address}}}"
+      },
+      "rationale": [
+        "A single-letter directional prefix."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "street-address/spelled-out-direction",
+      "text": "lived at 100 South Main St",
+      "expect": {
+        "spans": [
+          {
+            "start": 9,
+            "end": 26,
+            "type": "street-address",
+            "text": "100 South Main St"
+          }
+        ],
+        "filtered_text": "lived at {{{REDACTED-street-address}}}"
+      },
+      "rationale": [
+        "A spelled-out directional prefix."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "street-address/direction-and-trailing-period",
+      "text": "291 North Pawnee Ave.",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 21,
+            "type": "street-address",
+            "text": "291 North Pawnee Ave."
+          }
+        ],
+        "filtered_text": "{{{REDACTED-street-address}}}"
+      },
+      "rationale": [
+        "A directional prefix with an abbreviated type ending in a period."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "street-address/abbreviated-direction-with-period",
+      "text": "656 S. Inverness St.",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 20,
+            "type": "street-address",
+            "text": "656 S. Inverness St."
+          }
+        ],
+        "filtered_text": "{{{REDACTED-street-address}}}"
+      },
+      "rationale": [
+        "An abbreviated direction written with its own period."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "street-address/preceded-by-word",
+      "text": "North 2800 Clay Edwards Drive",
+      "expect": {
+        "spans": [
+          {
+            "start": 6,
+            "end": 29,
+            "type": "street-address",
+            "text": "2800 Clay Edwards Drive"
+          }
+        ],
+        "filtered_text": "North {{{REDACTED-street-address}}}"
+      },
+      "rationale": [
+        "A word before the house number must stay outside the span."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "street-address/st-abbreviation",
+      "text": "14 Southampton St.",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 18,
+            "type": "street-address",
+            "text": "14 Southampton St."
+          }
+        ],
+        "filtered_text": "{{{REDACTED-street-address}}}"
+      },
+      "rationale": [
+        "The St. abbreviation."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "street-address/drive",
+      "text": "22 Newport Drive",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 16,
+            "type": "street-address",
+            "text": "22 Newport Drive"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-street-address}}}"
+      },
+      "rationale": [
+        "The Drive street type."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "street-address/court",
+      "text": "6 Berkshire Court",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 17,
+            "type": "street-address",
+            "text": "6 Berkshire Court"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-street-address}}}"
+      },
+      "rationale": [
+        "The Court street type."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "street-address/court-abbreviated",
+      "text": "4 Devonshire Ct.",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 16,
+            "type": "street-address",
+            "text": "4 Devonshire Ct."
+          }
+        ],
+        "filtered_text": "{{{REDACTED-street-address}}}"
+      },
+      "rationale": [
+        "The Ct. abbreviation."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "street-address/court-abbreviated-no-period",
+      "text": "4 Devonshire Ct",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 15,
+            "type": "street-address",
+            "text": "4 Devonshire Ct"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-street-address}}}"
+      },
+      "rationale": [
+        "Ct with no trailing period."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "street-address/ordinal-street-name",
+      "text": "291 6th Dr.",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 11,
+            "type": "street-address",
+            "text": "291 6th Dr."
+          }
+        ],
+        "filtered_text": "{{{REDACTED-street-address}}}"
+      },
+      "rationale": [
+        "A numbered street name, where the name itself is digits plus an ordinal suffix."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "street-address/four-digit-house-number",
+      "text": "9444 Heritage St.",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 17,
+            "type": "street-address",
+            "text": "9444 Heritage St."
+          }
+        ],
+        "filtered_text": "{{{REDACTED-street-address}}}"
+      },
+      "rationale": [
+        "A four-digit house number."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "street-address/mid-sentence",
+      "text": "address is 9444 Heritage St. over there",
+      "expect": {
+        "spans": [
+          {
+            "start": 11,
+            "end": 28,
+            "type": "street-address",
+            "text": "9444 Heritage St."
+          }
+        ],
+        "filtered_text": "address is {{{REDACTED-street-address}}} over there"
+      },
+      "rationale": [
+        "An address with text on both sides."
+      ],
+      "since": "0.1.0"
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "name": "phone-number-redact",
+  "identifiers": {
+    "phoneNumber": {
+      "phoneNumberFilterStrategies": [
+        {
+          "strategy": "REDACT"
+        }
+      ]
+    }
+  }
+}

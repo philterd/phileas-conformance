@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "policy": "policies/date-redact.json",
+  "tags": [
+    "regex",
+    "date",
+    "negative"
+  ],
+  "cases": [
+    {
+      "id": "date/negative-prose-without-numbers",
+      "text": "The good news is everywhere we go it is that way but this may be on top of that.",
+      "expect": {
+        "spans": [],
+        "filtered_text": "The good news is everywhere we go it is that way but this may be on top of that."
+      },
+      "rationale": [
+        "Prose containing the word 'may' as a verb, with no number after it, must not match."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "date/negative-decimal-number",
+      "text": "The value is 3.14 today",
+      "expect": {
+        "spans": [],
+        "filtered_text": "The value is 3.14 today"
+      },
+      "rationale": [
+        "A decimal number is not a date."
+      ],
+      "since": "0.1.0"
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "policy": "policies/ssn-condition-token-nomatch.json",
+  "tags": [
+    "conditions",
+    "policy"
+  ],
+  "cases": [
+    {
+      "id": "conditions/token-no-match-falls-through",
+      "text": "ssn 123-45-6789 and 555-55-1234",
+      "expect": {
+        "spans": [
+          {
+            "start": 4,
+            "end": 15,
+            "type": "ssn",
+            "text": "123-45-6789"
+          },
+          {
+            "start": 20,
+            "end": 31,
+            "type": "ssn",
+            "text": "555-55-1234"
+          }
+        ],
+        "filtered_text": "ssn *********** and ***********"
+      },
+      "rationale": [
+        "When no value satisfies the condition, every span falls through to the unconditional strategy.",
+        "This is the case that fails if an implementation treats a present-but-unsatisfied condition as no condition at all."
+      ],
+      "since": "0.1.0"
+    }
+  ]
+}

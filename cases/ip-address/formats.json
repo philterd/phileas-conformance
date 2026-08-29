@@ -1,0 +1,163 @@
+{
+  "schema": 1,
+  "policy": "policies/ip-address-redact.json",
+  "tags": [
+    "regex",
+    "ip-address"
+  ],
+  "cases": [
+    {
+      "id": "ip-address/ipv4-dotted-quad",
+      "text": "the ip is 192.168.1.101.",
+      "expect": {
+        "spans": [
+          {
+            "start": 10,
+            "end": 23,
+            "type": "ip-address",
+            "text": "192.168.1.101"
+          }
+        ],
+        "filtered_text": "the ip is {{{REDACTED-ip-address}}}."
+      },
+      "rationale": [
+        "A dotted-quad IPv4 address. The sentence's trailing period must stay outside the span."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "ip-address/ipv4-bare",
+      "text": "1.1.1.1",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 7,
+            "type": "ip-address",
+            "text": "1.1.1.1"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-ip-address}}}"
+      },
+      "rationale": [
+        "An address as the entire document, with no surrounding text."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "ip-address/ipv4-all-zeros",
+      "text": "ip 0.0.0.0",
+      "expect": {
+        "spans": [
+          {
+            "start": 3,
+            "end": 10,
+            "type": "ip-address",
+            "text": "0.0.0.0"
+          }
+        ],
+        "filtered_text": "ip {{{REDACTED-ip-address}}}"
+      },
+      "rationale": [
+        "0.0.0.0 is a syntactically valid IPv4 address and is matched."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "ip-address/ipv6-full",
+      "text": "the ip is 2001:0db8:85a3:0000:0000:8a2e:0370:7334",
+      "expect": {
+        "spans": [
+          {
+            "start": 10,
+            "end": 49,
+            "type": "ip-address",
+            "text": "2001:0db8:85a3:0000:0000:8a2e:0370:7334"
+          }
+        ],
+        "filtered_text": "the ip is {{{REDACTED-ip-address}}}"
+      },
+      "rationale": [
+        "A fully written IPv6 address."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "ip-address/ipv6-compressed",
+      "text": "the ip is fe80::0202:B3FF:FE1E:8329",
+      "expect": {
+        "spans": [
+          {
+            "start": 10,
+            "end": 35,
+            "type": "ip-address",
+            "text": "fe80::0202:B3FF:FE1E:8329"
+          }
+        ],
+        "filtered_text": "the ip is {{{REDACTED-ip-address}}}"
+      },
+      "rationale": [
+        "IPv6 with a :: run-length compression, and mixed-case hex digits."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "ip-address/ipv6-shortest",
+      "text": "the ip is 1::",
+      "expect": {
+        "spans": [
+          {
+            "start": 10,
+            "end": 13,
+            "type": "ip-address",
+            "text": "1::"
+          }
+        ],
+        "filtered_text": "the ip is {{{REDACTED-ip-address}}}"
+      },
+      "rationale": [
+        "The shortest compressed form. A boundary case for the :: handling."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "ip-address/ipv6-loopback",
+      "text": "ip ::1",
+      "expect": {
+        "spans": [
+          {
+            "start": 3,
+            "end": 6,
+            "type": "ip-address",
+            "text": "::1"
+          }
+        ],
+        "filtered_text": "ip {{{REDACTED-ip-address}}}"
+      },
+      "rationale": [
+        "The loopback address, which is leading-compressed rather than trailing."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "ip-address/ipv4-all-255",
+      "text": "ip 255.255.255.255",
+      "expect": {
+        "spans": [
+          {
+            "start": 3,
+            "end": 18,
+            "type": "ip-address",
+            "text": "255.255.255.255"
+          }
+        ],
+        "filtered_text": "ip {{{REDACTED-ip-address}}}"
+      },
+      "rationale": [
+        "255.255.255.255 is a valid IPv4 broadcast address and must be detected in full.",
+        "phileas currently returns [3,17), dropping the final character and leaving a digit in the output. See philterd/phileas#335."
+      ],
+      "since": "0.1.0"
+    }
+  ]
+}

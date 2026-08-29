@@ -1,0 +1,97 @@
+{
+  "schema": 1,
+  "policy": "policies/custom-dictionary-exact.json",
+  "tags": [
+    "dictionary",
+    "custom-dictionary"
+  ],
+  "cases": [
+    {
+      "id": "custom-dictionary/exact-single-term",
+      "text": "the project is Bluebird and it ships",
+      "expect": {
+        "spans": [
+          {
+            "start": 15,
+            "end": 23,
+            "type": "custom-dictionary",
+            "text": "Bluebird"
+          }
+        ],
+        "filtered_text": "the project is {{{REDACTED-custom-dictionary}}} and it ships"
+      },
+      "rationale": [
+        "A dictionary term mid-sentence. The dictionary is three terms supplied inline in the policy, so the case carries its own data and needs no external file."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "custom-dictionary/exact-two-terms-one-document",
+      "text": "Redwood and Harrier are both active",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 7,
+            "type": "custom-dictionary",
+            "text": "Redwood"
+          },
+          {
+            "start": 12,
+            "end": 19,
+            "type": "custom-dictionary",
+            "text": "Harrier"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-custom-dictionary}}} and {{{REDACTED-custom-dictionary}}} are both active"
+      },
+      "rationale": [
+        "Two terms in one document must produce two spans, in order of appearance."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "custom-dictionary/exact-case-insensitive",
+      "text": "the project is bluebird in lowercase",
+      "expect": {
+        "spans": [
+          {
+            "start": 15,
+            "end": 23,
+            "type": "custom-dictionary",
+            "text": "bluebird"
+          }
+        ],
+        "filtered_text": "the project is {{{REDACTED-custom-dictionary}}} in lowercase"
+      },
+      "rationale": [
+        "Matching is case insensitive by default, which is easy to get wrong when porting."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "custom-dictionary/exact-negative-absent-term",
+      "text": "nothing to see here",
+      "expect": {
+        "spans": [],
+        "filtered_text": "nothing to see here"
+      },
+      "rationale": [
+        "A document with no dictionary term produces no spans."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "custom-dictionary/exact-negative-near-miss",
+      "text": "the project is Bluebrid and it ships",
+      "expect": {
+        "spans": [],
+        "filtered_text": "the project is Bluebrid and it ships"
+      },
+      "rationale": [
+        "With fuzzy matching off, a one-character transposition must not match. This pins exact mode as actually exact."
+      ],
+      "since": "0.1.0"
+    }
+  ]
+}

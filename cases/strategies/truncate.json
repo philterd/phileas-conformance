@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "policy": "policies/ssn-truncate.json",
+  "tags": [
+    "strategies"
+  ],
+  "cases": [
+    {
+      "id": "strategies/truncate-keeps-prefix",
+      "text": "the ssn is 123-45-6789.",
+      "expect": {
+        "spans": [
+          {
+            "start": 11,
+            "end": 22,
+            "type": "ssn",
+            "text": "123-45-6789"
+          }
+        ],
+        "filtered_text": "the ssn is 123-*******."
+      },
+      "rationale": [
+        "TRUNCATE keeps a leading portion and masks the rest, so the exact boundary is worth pinning."
+      ],
+      "since": "0.1.0"
+    }
+  ]
+}

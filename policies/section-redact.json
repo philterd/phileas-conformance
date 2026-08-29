@@ -1,0 +1,12 @@
+{
+  "name": "section-redact",
+  "identifiers": {
+    "sections": [
+      {
+        "startPattern": "BEGIN-REDACT",
+        "endPattern": "END-REDACT",
+        "sectionFilterStrategies": [ { "strategy": "REDACT" } ]
+      }
+    ]
+  }
+}

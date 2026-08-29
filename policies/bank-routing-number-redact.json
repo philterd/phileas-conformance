@@ -1,0 +1,12 @@
+{
+  "name": "bank-routing-number-redact",
+  "identifiers": {
+    "bankRoutingNumber": {
+      "bankRoutingNumberFilterStrategies": [
+        {
+          "strategy": "REDACT"
+        }
+      ]
+    }
+  }
+}

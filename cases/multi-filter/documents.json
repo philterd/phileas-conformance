@@ -1,0 +1,123 @@
+{
+  "schema": 1,
+  "policy": "policies/multi-filter-redact.json",
+  "tags": [
+    "multi-filter",
+    "integration"
+  ],
+  "cases": [
+    {
+      "id": "multi-filter/clinical-note",
+      "text": "Patient SSN 123-45-6789, DOB 05/14/1972, reachable at jane.doe@example.com or (555) 123-9988, ZIP 90210.",
+      "expect": {
+        "spans": [
+          {
+            "start": 12,
+            "end": 23,
+            "type": "ssn",
+            "text": "123-45-6789"
+          },
+          {
+            "start": 29,
+            "end": 39,
+            "type": "date",
+            "text": "05/14/1972"
+          },
+          {
+            "start": 54,
+            "end": 74,
+            "type": "email-address",
+            "text": "jane.doe@example.com"
+          },
+          {
+            "start": 78,
+            "end": 92,
+            "type": "phone-number",
+            "text": "(555) 123-9988"
+          },
+          {
+            "start": 98,
+            "end": 103,
+            "type": "zip-code",
+            "text": "90210"
+          }
+        ],
+        "filtered_text": "Patient SSN {{{REDACTED-ssn}}}, DOB {{{REDACTED-date}}}, reachable at {{{REDACTED-email-address}}} or {{{REDACTED-phone-number}}}, ZIP {{{REDACTED-zip-code}}}."
+      },
+      "rationale": [
+        "Five PII types in one sentence under one policy. Single-filter cases cannot catch a filter claiming text that belongs to another, which is where implementations most plausibly diverge.",
+        "Note the phone number is not read as an SSN and the SSN is not read as a phone number, even though both are digit groups with hyphens."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "multi-filter/server-log",
+      "text": "Server 192.168.1.101 logged card 4111111111111111 on 2024-01-15.",
+      "expect": {
+        "spans": [
+          {
+            "start": 7,
+            "end": 20,
+            "type": "ip-address",
+            "text": "192.168.1.101"
+          },
+          {
+            "start": 33,
+            "end": 49,
+            "type": "credit-card",
+            "text": "4111111111111111"
+          },
+          {
+            "start": 53,
+            "end": 63,
+            "type": "date",
+            "text": "2024-01-15"
+          }
+        ],
+        "filtered_text": "Server {{{REDACTED-ip-address}}} logged card {{{REDACTED-credit-card}}} on {{{REDACTED-date}}}."
+      },
+      "rationale": [
+        "An IP, a card number and an ISO date together. The card must not be split by the date filter, and the IP must not be read as a version or a date."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "multi-filter/ein-and-ssn",
+      "text": "The EIN is 12-3456789 and the SSN is 123-45-6789.",
+      "expect": {
+        "spans": [
+          {
+            "start": 11,
+            "end": 21,
+            "type": "ein",
+            "text": "12-3456789"
+          },
+          {
+            "start": 37,
+            "end": 48,
+            "type": "ssn",
+            "text": "123-45-6789"
+          }
+        ],
+        "filtered_text": "The EIN is {{{REDACTED-ein}}} and the SSN is {{{REDACTED-ssn}}}."
+      },
+      "rationale": [
+        "EIN and SSN have overlapping shapes, so a document containing both pins which filter claims which.",
+        "This is the case that fails first if either pattern is loosened."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "multi-filter/no-pii",
+      "text": "Nothing here at all.",
+      "expect": {
+        "spans": [],
+        "filtered_text": "Nothing here at all."
+      },
+      "rationale": [
+        "An ordinary sentence under a policy with eight filters enabled must produce nothing. Guards against any filter matching prose."
+      ],
+      "since": "0.1.0"
+    }
+  ]
+}

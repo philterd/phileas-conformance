@@ -1,0 +1,19 @@
+{
+  "name": "ssn-condition-context",
+  "identifiers": {
+    "ssn": {
+      "ssnFilterStrategies": [
+        {
+          "strategy": "STATIC_REPLACE",
+          "staticReplacement": "MATCHED",
+          "condition": "context == \"context\""
+        },
+        {
+          "strategy": "MASK",
+          "maskCharacter": "*",
+          "maskLength": "same"
+        }
+      ]
+    }
+  }
+}

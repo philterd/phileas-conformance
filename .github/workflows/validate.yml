@@ -1,0 +1,49 @@
+name: Validate corpus
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+
+# The corpus is data, so the only thing CI can check here is that it is well
+# formed: every case file matches schema/case.schema.json, span offsets actually
+# index the text they claim, ids are unique corpus-wide and match their
+# directory, referenced policies exist and parse, no case text leaves the Basic
+# Multilingual Plane, and no case claims a version newer than VERSION.
+# Whether an implementation passes the corpus is checked in that
+# implementation's own repository, not here.
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install -r scripts/requirements.txt
+
+      - name: Validate
+        run: python scripts/validate.py
+
+  # Implementations pin a tag and their loaders compare the corpus VERSION against
+  # the corpus_version in their own baseline. A tag whose VERSION disagrees would
+  # make every implementation fail that check for a reason that looks like a bug in
+  # them, so the two are held together here.
+  tag-matches-version:
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: VERSION must match the tag
+        run: |
+          tag="${GITHUB_REF_NAME#v}"
+          version="$(cat VERSION)"
+          if [ "$tag" != "$version" ]; then
+            echo "tag $GITHUB_REF_NAME implies VERSION $tag but VERSION is $version"
+            exit 1
+          fi
+          echo "tag $GITHUB_REF_NAME matches VERSION $version"

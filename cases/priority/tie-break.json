@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "policy": "policies/identifier-priority-low-first.json",
+  "tags": [
+    "priority",
+    "policy"
+  ],
+  "cases": [
+    {
+      "id": "priority/higher-wins-listed-second",
+      "text": "token AB123456 here",
+      "expect": {
+        "spans": [
+          {
+            "start": 6,
+            "end": 14,
+            "type": "id",
+            "text": "AB123456"
+          }
+        ],
+        "filtered_text": "token HIGH here"
+      },
+      "rationale": [
+        "Two identifier entries match the same span with the same confidence, so priority decides. The higher priority wins even though it is listed second.",
+        "Overlap resolution ranks by length, then confidence, then priority, so priority is only consulted once the first two tie. That is what this case arranges."
+      ],
+      "since": "0.1.0"
+    }
+  ]
+}

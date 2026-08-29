@@ -1,0 +1,87 @@
+{
+  "schema": 1,
+  "policy": "policies/bitcoin-address-redact.json",
+  "tags": [
+    "regex",
+    "bitcoin-address"
+  ],
+  "cases": [
+    {
+      "id": "bitcoin-address/p2pkh",
+      "text": "the address is 127NVqnjf8gB9BFAW2dnQeM6wqmy1gbGtv.",
+      "expect": {
+        "spans": [
+          {
+            "start": 15,
+            "end": 49,
+            "type": "bitcoin-address",
+            "text": "127NVqnjf8gB9BFAW2dnQeM6wqmy1gbGtv"
+          }
+        ],
+        "filtered_text": "the address is {{{REDACTED-bitcoin-address}}}."
+      },
+      "rationale": [
+        "A P2PKH address beginning with 1. The trailing sentence period stays outside the span."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "bitcoin-address/p2pkh-no-trailing-period",
+      "text": "the address is 127NVqnjf8gB9BFAW2dnQeM6wqmy1gbGtv",
+      "expect": {
+        "spans": [
+          {
+            "start": 15,
+            "end": 49,
+            "type": "bitcoin-address",
+            "text": "127NVqnjf8gB9BFAW2dnQeM6wqmy1gbGtv"
+          }
+        ],
+        "filtered_text": "the address is {{{REDACTED-bitcoin-address}}}"
+      },
+      "rationale": [
+        "The same address at end of document, confirming the span does not depend on what follows."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "bitcoin-address/short-form",
+      "text": "the address is 12qnjf8FAW2dnQeM6wqmy1gbGtv.",
+      "expect": {
+        "spans": [
+          {
+            "start": 15,
+            "end": 42,
+            "type": "bitcoin-address",
+            "text": "12qnjf8FAW2dnQeM6wqmy1gbGtv"
+          }
+        ],
+        "filtered_text": "the address is {{{REDACTED-bitcoin-address}}}."
+      },
+      "rationale": [
+        "A 27-character address. Bitcoin addresses vary in length, so the shorter end of the range is matched too."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "bitcoin-address/bech32",
+      "text": "addr bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t4",
+      "expect": {
+        "spans": [
+          {
+            "start": 5,
+            "end": 47,
+            "type": "bitcoin-address",
+            "text": "bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t4"
+          }
+        ],
+        "filtered_text": "addr {{{REDACTED-bitcoin-address}}}"
+      },
+      "rationale": [
+        "bech32 has been the default address format in most wallets since 2017, so a Bitcoin filter that misses it misses most current addresses.",
+        "phileas detects only Base58 forms today. See philterd/phileas#338."
+      ],
+      "since": "0.1.0"
+    }
+  ]
+}

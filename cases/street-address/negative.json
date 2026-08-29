@@ -1,0 +1,59 @@
+{
+  "schema": 1,
+  "policy": "policies/street-address-redact.json",
+  "tags": [
+    "regex",
+    "street-address",
+    "negative"
+  ],
+  "cases": [
+    {
+      "id": "street-address/negative-chapter-number",
+      "text": "Chapter 4 summary",
+      "expect": {
+        "spans": [],
+        "filtered_text": "Chapter 4 summary"
+      },
+      "rationale": [
+        "'Chapter 4' is a number after a word but not an address."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "street-address/negative-time-of-day",
+      "text": "Meeting at 3 PM today",
+      "expect": {
+        "spans": [],
+        "filtered_text": "Meeting at 3 PM today"
+      },
+      "rationale": [
+        "A time of day is not an address."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "street-address/negative-section-number",
+      "text": "Section 5 covers everything",
+      "expect": {
+        "spans": [],
+        "filtered_text": "Section 5 covers everything"
+      },
+      "rationale": [
+        "'Section 5' is not an address; the street type is what makes an address."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "street-address/negative-po-box-no-number",
+      "text": "PO Box without a number",
+      "expect": {
+        "spans": [],
+        "filtered_text": "PO Box without a number"
+      },
+      "rationale": [
+        "A PO Box with no number does not match."
+      ],
+      "since": "0.1.0"
+    }
+  ]
+}

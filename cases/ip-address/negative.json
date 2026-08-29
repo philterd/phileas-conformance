@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "policy": "policies/ip-address-redact.json",
+  "tags": [
+    "regex",
+    "ip-address",
+    "negative"
+  ],
+  "cases": [
+    {
+      "id": "ip-address/negative-octet-out-of-range",
+      "text": "ip 256.1.1.1",
+      "expect": {
+        "spans": [],
+        "filtered_text": "ip 256.1.1.1"
+      },
+      "rationale": [
+        "256 is not a valid octet, so this is not an IP address and must produce no span.",
+        "phileas currently returns [4,12) '56.1.1.1', salvaging an invalid address into a valid-looking match by starting partway through the digits. See philterd/phileas#336."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "ip-address/negative-dotted-version-string",
+      "text": "ip 999.999.999.999",
+      "expect": {
+        "spans": [],
+        "filtered_text": "ip 999.999.999.999"
+      },
+      "rationale": [
+        "Every octet is out of range, so there is nothing to match."
+      ],
+      "since": "0.1.0"
+    }
+  ]
+}

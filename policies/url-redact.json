@@ -1,0 +1,12 @@
+{
+  "name": "url-redact",
+  "identifiers": {
+    "url": {
+      "urlFilterStrategies": [
+        {
+          "strategy": "REDACT"
+        }
+      ]
+    }
+  }
+}

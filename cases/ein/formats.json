@@ -1,0 +1,67 @@
+{
+  "schema": 1,
+  "policy": "policies/ein-redact.json",
+  "tags": [
+    "regex",
+    "ein"
+  ],
+  "cases": [
+    {
+      "id": "ein/hyphenated",
+      "text": "the ein is 12-3456789.",
+      "expect": {
+        "spans": [
+          {
+            "start": 11,
+            "end": 21,
+            "type": "ein",
+            "text": "12-3456789"
+          }
+        ],
+        "filtered_text": "the ein is {{{REDACTED-ein}}}."
+      },
+      "rationale": [
+        "The canonical two-then-seven grouping."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "ein/leading-zero-prefix",
+      "text": "the ein is 07-1234567.",
+      "expect": {
+        "spans": [
+          {
+            "start": 11,
+            "end": 21,
+            "type": "ein",
+            "text": "07-1234567"
+          }
+        ],
+        "filtered_text": "the ein is {{{REDACTED-ein}}}."
+      },
+      "rationale": [
+        "A prefix beginning with zero, which must not be normalised away."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "ein/high-prefix",
+      "text": "the ein is 98-7654321.",
+      "expect": {
+        "spans": [
+          {
+            "start": 11,
+            "end": 21,
+            "type": "ein",
+            "text": "98-7654321"
+          }
+        ],
+        "filtered_text": "the ein is {{{REDACTED-ein}}}."
+      },
+      "rationale": [
+        "A high two-digit prefix."
+      ],
+      "since": "0.1.0"
+    }
+  ]
+}

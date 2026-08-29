@@ -1,0 +1,119 @@
+{
+  "schema": 1,
+  "policy": "policies/email-address-redact.json",
+  "tags": [
+    "regex",
+    "email-address",
+    "negative"
+  ],
+  "cases": [
+    {
+      "id": "email-address/negative-no-at-sign",
+      "text": "plainaddress",
+      "expect": {
+        "spans": [],
+        "filtered_text": "plainaddress"
+      },
+      "rationale": [
+        "No @ at all."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "email-address/negative-missing-local-part",
+      "text": "@example.com",
+      "expect": {
+        "spans": [],
+        "filtered_text": "@example.com"
+      },
+      "rationale": [
+        "An @ with nothing before it."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "email-address/negative-dots-not-at",
+      "text": "email.example.com",
+      "expect": {
+        "spans": [],
+        "filtered_text": "email.example.com"
+      },
+      "rationale": [
+        "Dotted text that resembles a domain but has no @."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "email-address/negative-no-tld",
+      "text": "email@example",
+      "expect": {
+        "spans": [],
+        "filtered_text": "email@example"
+      },
+      "rationale": [
+        "A bare hostname with no dot is not treated as an address."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "email-address/negative-consecutive-dots-in-domain",
+      "text": "email@example..com",
+      "expect": {
+        "spans": [],
+        "filtered_text": "email@example..com"
+      },
+      "rationale": [
+        "An empty domain label is invalid."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "email-address/negative-leading-hyphen-domain",
+      "text": "email@-example.com",
+      "expect": {
+        "spans": [],
+        "filtered_text": "email@-example.com"
+      },
+      "rationale": [
+        "A domain label may not begin with a hyphen."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "email-address/negative-trailing-dot-local-part",
+      "text": "email.@example.com",
+      "expect": {
+        "spans": [],
+        "filtered_text": "email.@example.com"
+      },
+      "rationale": [
+        "A local part may not end with a dot."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "email-address/negative-symbol-soup",
+      "text": "#@%^%#$@#$@#.com",
+      "expect": {
+        "spans": [],
+        "filtered_text": "#@%^%#$@#$@#.com"
+      },
+      "rationale": [
+        "Punctuation around an @ is not enough to make an address."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "email-address/negative-non-ascii-local-part",
+      "text": "あいうえお@example.com",
+      "expect": {
+        "spans": [],
+        "filtered_text": "あいうえお@example.com"
+      },
+      "rationale": [
+        "Non-ASCII local parts are not matched. Pinned as current scope rather than as correct behaviour: internationalised addresses are real, so this is the case to revisit if IDN support is added."
+      ],
+      "since": "0.1.0"
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "schema": 1,
+  "policy": "policies/age-redact.json",
+  "tags": [
+    "regex",
+    "age"
+  ],
+  "cases": [
+    {
+      "id": "age/negative-duration-years",
+      "text": "Had symptoms for the past 10 years",
+      "expect": {
+        "spans": [],
+        "filtered_text": "Had symptoms for the past 10 years"
+      },
+      "rationale": [
+        "A duration, not an age. The post-filter drops a numeric-plus-unit match with no age context in its window.",
+        "This is the main false-positive risk for this filter: durations share the surface form of ages."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "age/negative-duration-ago",
+      "text": "she left five years ago",
+      "expect": {
+        "spans": [],
+        "filtered_text": "she left five years ago"
+      },
+      "rationale": [
+        "A spelled-out duration. Matched by the pattern but dropped for lack of age context, mirroring the numeric case."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "age/negative-word-ending-in-age",
+      "text": "coverage: 47",
+      "expect": {
+        "spans": [],
+        "filtered_text": "coverage: 47"
+      },
+      "rationale": [
+        "'coverage' ends in the letters 'age'. The label pattern requires a word boundary, so this must not match."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "age/negative-hyphenated-date",
+      "text": "The visit was on 2026-01-15.",
+      "expect": {
+        "spans": [],
+        "filtered_text": "The visit was on 2026-01-15."
+      },
+      "rationale": [
+        "A hyphen is a valid label separator, so a date must not be reinterpreted as a labelled age."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "age/negative-calendar-year",
+      "text": "The year is 2024.",
+      "expect": {
+        "spans": [],
+        "filtered_text": "The year is 2024."
+      },
+      "rationale": [
+        "A bare four-digit year is not an age.",
+        "Guards against widening the age patterns until they swallow calendar years."
+      ],
+      "since": "0.1.0"
+    }
+  ]
+}

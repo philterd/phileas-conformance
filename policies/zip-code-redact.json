@@ -1,0 +1,12 @@
+{
+  "name": "zip-code-redact",
+  "identifiers": {
+    "zipCode": {
+      "zipCodeFilterStrategy": [
+        {
+          "strategy": "REDACT"
+        }
+      ]
+    }
+  }
+}

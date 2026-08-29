@@ -1,0 +1,12 @@
+{
+  "name": "date-redact",
+  "identifiers": {
+    "date": {
+      "dateFilterStrategies": [
+        {
+          "strategy": "REDACT"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "policy": "policies/ssn-mask.json",
+  "tags": [
+    "strategies"
+  ],
+  "cases": [
+    {
+      "id": "strategies/mask-same-length",
+      "text": "the ssn is 123-45-6789.",
+      "expect": {
+        "spans": [
+          {
+            "start": 11,
+            "end": 22,
+            "type": "ssn",
+            "text": "123-45-6789"
+          }
+        ],
+        "filtered_text": "the ssn is ***********."
+      },
+      "rationale": [
+        "The MASK strategy replaces each character, so the replacement is the same length as the original.",
+        "Replacement behaviour is otherwise almost untested by the corpus, which uses REDACT nearly everywhere."
+      ],
+      "since": "0.1.0"
+    }
+  ]
+}

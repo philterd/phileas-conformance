@@ -1,0 +1,71 @@
+{
+  "schema": 1,
+  "policy": "policies/vin-redact.json",
+  "tags": [
+    "regex",
+    "vin",
+    "negative"
+  ],
+  "cases": [
+    {
+      "id": "vin/negative-bad-check-digit",
+      "text": "the vin is 11131517191011111.",
+      "expect": {
+        "spans": [],
+        "filtered_text": "the vin is 11131517191011111."
+      },
+      "rationale": [
+        "Seventeen characters with a failing check digit. VIN detection is validated, not shape-only, which is what keeps false positives down on long alphanumeric strings."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "vin/negative-bad-check-digit-x",
+      "text": "the vin is 11131517191X11111.",
+      "expect": {
+        "spans": [],
+        "filtered_text": "the vin is 11131517191X11111."
+      },
+      "rationale": [
+        "The same with an X check digit that does not verify."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "vin/negative-illegal-letter",
+      "text": "vin JB3BA36KIHU036784",
+      "expect": {
+        "spans": [],
+        "filtered_text": "vin JB3BA36KIHU036784"
+      },
+      "rationale": [
+        "I, O, and Q are excluded from the VIN alphabet to avoid confusion with 1 and 0."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "vin/negative-too-short",
+      "text": "vin JB3BA36KXHU03678",
+      "expect": {
+        "spans": [],
+        "filtered_text": "vin JB3BA36KXHU03678"
+      },
+      "rationale": [
+        "Sixteen characters is not a VIN."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "vin/negative-too-long",
+      "text": "vin JB3BA36KXHU0367845",
+      "expect": {
+        "spans": [],
+        "filtered_text": "vin JB3BA36KXHU0367845"
+      },
+      "rationale": [
+        "Eighteen characters is not a VIN."
+      ],
+      "since": "0.1.0"
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "schema": 1,
+  "policy": "policies/ein-redact.json",
+  "tags": [
+    "regex",
+    "ein",
+    "negative"
+  ],
+  "cases": [
+    {
+      "id": "ein/negative-unpunctuated",
+      "text": "the number is 123456789.",
+      "expect": {
+        "spans": [],
+        "filtered_text": "the number is 123456789."
+      },
+      "rationale": [
+        "Nine bare digits are not treated as an EIN; the hyphen is what distinguishes it from any other nine-digit number."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "ein/negative-ssn-grouping",
+      "text": "the ssn is 123-45-6789.",
+      "expect": {
+        "spans": [],
+        "filtered_text": "the ssn is 123-45-6789."
+      },
+      "rationale": [
+        "A 3-2-4 grouping is an SSN shape, not an EIN, and the two filters must not both claim it."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "ein/negative-too-few-digits",
+      "text": "ein 12-345678",
+      "expect": {
+        "spans": [],
+        "filtered_text": "ein 12-345678"
+      },
+      "rationale": [
+        "Eight digits total is not an EIN."
+      ],
+      "since": "0.1.0"
+    },
+    {
+      "id": "ein/negative-too-many-digits",
+      "text": "ein 12-34567890",
+      "expect": {
+        "spans": [],
+        "filtered_text": "ein 12-34567890"
+      },
+      "rationale": [
+        "Ten digits total is not an EIN."
+      ],
+      "since": "0.1.0"
+    }
+  ]
+}

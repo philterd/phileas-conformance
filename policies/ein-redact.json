@@ -1,0 +1,12 @@
+{
+  "name": "ein-redact",
+  "identifiers": {
+    "ein": {
+      "einFilterStrategies": [
+        {
+          "strategy": "REDACT"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "name": "age-redact-ignored-terms",
+  "ignored": [
+    {
+      "name": "literal-age-phrase",
+      "terms": ["35yEaRs old"],
+      "caseSensitive": false
+    }
+  ],
+  "identifiers": {
+    "age": {
+      "ageFilterStrategies": [
+        {
+          "strategy": "REDACT"
+        }
+      ]
+    }
+  }
+}
