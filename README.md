@@ -1,8 +1,8 @@
 # Phileas conformance corpus
 
-Language-neutral test cases that every Phileas implementation runs against its
-own filter service, so the Java, Python, and .NET implementations cannot drift
-apart unnoticed.
+Language-neutral test cases that every [Phileas](https://github.com/philterd/phileas)
+implementation runs against its own filter service, so the Java, Python, and .NET
+implementations cannot drift apart unnoticed.
 
 ```
 cases/        the corpus, one directory per filter or cross-cutting category
@@ -20,6 +20,17 @@ because it has to touch that implementation's API.
 Each implementation keeps its own unit tests. Those cover internals the corpus
 cannot reach from the service boundary.
 
+## Using it with other tools
+
+Nothing about a case is specific to Phileas: each one asserts an input document
+and the spans that should be found in it, by offset, type and text, which any PII
+redaction tool can be measured against. What is Phileas-shaped is `policies/`,
+for which another tool substitutes its own configuration, and the `filtered_text`
+most cases also assert, which embeds Phileas's replacement format. Because every
+case carries a `rationale` for why its expectation is correct rather than what
+one implementation happens to do, the corpus reads as a specification of PII
+detection rather than a description of Phileas.
+
 ## Validating
 
 ```sh
@@ -36,5 +47,13 @@ own repository, not here.
 
 ## Reference
 
-- [SCHEMA.md](SCHEMA.md) — scope, case format, determinism tiers, baselines
-- [CONSUMING.md](CONSUMING.md) — what an implementation must do to run the corpus
+- [SCHEMA.md](SCHEMA.md): scope, case format, determinism tiers, baselines
+- [CONSUMING.md](CONSUMING.md): what an implementation must do to run the corpus
+
+## License
+
+Copyright 2026 Philterd, LLC.
+
+Licensed under the Apache License, Version 2.0. See [LICENSE](LICENSE) for details.
+
+"Phileas" and "Philter" are registered trademarks of Philterd, LLC.
