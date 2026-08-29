@@ -20,6 +20,40 @@ because it has to touch that implementation's API.
 Each implementation keeps its own unit tests. Those cover internals the corpus
 cannot reach from the service boundary.
 
+## What is covered
+
+| Type | Detects |
+|---|---|
+| `age` | Ages in numeric, abbreviated and spelled-out forms, and as a labelled field |
+| `bank-routing-number` | US ABA routing numbers, checksum validated |
+| `bitcoin-address` | Base58 Bitcoin addresses |
+| `credit-card` | Card numbers for the major issuers, Luhn validated |
+| `currency` | Monetary amounts by symbol or ISO code, including non-US conventions |
+| `custom-dictionary` | Terms supplied inline in the policy, matched exactly or fuzzily |
+| `date` | Dates in numeric, slash, dot, ISO and month-name forms |
+| `drivers-license-number` | US driver's license numbers |
+| `ein` | US Employer Identification Numbers |
+| `email-address` | Email addresses, including the awkward but valid forms |
+| `iban-code` | International Bank Account Numbers, spaced or unspaced |
+| `id` | Identifiers matching a regex supplied in the policy |
+| `ip-address` | IPv4 and IPv6 addresses |
+| `mac-address` | MAC addresses, colon or hyphen separated |
+| `passport-number` | US passport numbers |
+| `phone-number` | US phone numbers, with or without punctuation and extensions |
+| `phone-number-extension` | Extensions written on their own |
+| `section` | Everything between a start and end marker given in the policy |
+| `ssn` | US Social Security numbers, including invalid ranges that must not match |
+| `state-abbreviation` | Two-letter US state abbreviations |
+| `street-address` | US street addresses, with directionals and secondary units |
+| `tracking-number` | UPS, USPS and FedEx shipment tracking numbers |
+| `url` | URLs with and without a scheme, including IP and IPv6 hosts |
+| `vin` | Vehicle Identification Numbers, check digit validated |
+| `zip-code` | US ZIP and ZIP+4 codes |
+
+Cases also cover behaviour that is not tied to one type: documents containing
+several types at once, policy conditions and ignore rules, replacement
+strategies, and encrypting strategies asserted by property.
+
 ## Using it with other tools
 
 Nothing about a case is specific to Phileas: each one asserts an input document
