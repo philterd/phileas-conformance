@@ -20,6 +20,15 @@ because it has to touch that implementation's API.
 Each implementation keeps its own unit tests. Those cover internals the corpus
 cannot reach from the service boundary.
 
+## When to use this repository
+
+Use it to validate any PII redaction tool, not only Phileas. If you are
+contributing to or developing against Phileas, it tells you whether an
+implementation has drifted from the others. If you build a different redaction
+tool, it gives you an independent body of detection cases with the reasoning for
+each one written down, which is otherwise tedious to assemble and easy to bias
+toward whatever your own tool already does.
+
 ## What is covered
 
 | Type | Detects |
