@@ -1,0 +1,64 @@
+{
+  "schema": 1,
+  "policy": "policies/phone-number-region-gb-redact.json",
+  "tags": [
+    "phone-number",
+    "region"
+  ],
+  "cases": [
+    {
+      "id": "phone-number/region-gb-national-format",
+      "text": "the number is 020 7946 0958.",
+      "expect": {
+        "spans": [
+          {
+            "start": 14,
+            "end": 27,
+            "type": "phone-number",
+            "text": "020 7946 0958"
+          }
+        ],
+        "filtered_text": "the number is {{{REDACTED-phone-number}}}."
+      },
+      "rationale": [
+        "A number written in a national format carries no country code, so it can only be recognized against a region. With the region set to GB, a UK national-format number is phone data and must be detected.",
+        "This is the whole point of the region property: without it the same text is unrecognizable as a phone number."
+      ],
+      "since": "0.2.0"
+    },
+    {
+      "id": "phone-number/region-default-misses-foreign-national-format",
+      "policy": "policies/phone-number-redact.json",
+      "text": "the number is 020 7946 0958.",
+      "expect": {
+        "spans": [],
+        "filtered_text": "the number is 020 7946 0958."
+      },
+      "rationale": [
+        "The same UK national-format number under the default region produces no span. A national format is only meaningful relative to a region, and this one is not a valid number in the default region.",
+        "Paired with region-gb-national-format, this pins that the region property is what changes the outcome rather than the number being detected regardless."
+      ],
+      "since": "0.2.0"
+    },
+    {
+      "id": "phone-number/region-international-detected-regardless",
+      "text": "the number is +1 202-555-0182.",
+      "expect": {
+        "spans": [
+          {
+            "start": 14,
+            "end": 29,
+            "type": "phone-number",
+            "text": "+1 202-555-0182"
+          }
+        ],
+        "filtered_text": "the number is {{{REDACTED-phone-number}}}."
+      },
+      "rationale": [
+        "A '+'-prefixed number carries its own country code, so it is unambiguous without a region and must be detected whatever the region is set to.",
+        "Configured here as GB against a US number, so a region setting that suppressed out-of-region international numbers would fail."
+      ],
+      "since": "0.2.0"
+    }
+  ]
+}

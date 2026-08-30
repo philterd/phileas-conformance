@@ -121,8 +121,13 @@ via `expect.filtered_text`, which every implementation exposes
 Deterministic, may be asserted: `REDACT`, `MASK`, `STATIC_REPLACE`, `TRUNCATE`,
 `TRUNCATE_TO_YEAR`, `ABBREVIATE`, `LAST_4`, `SHIFT`, `RELATIVE`.
 
-Not asserted as exact text: `RANDOM_REPLACE` and `MAP_REPLACE`, which are not
-reproducible at all.
+Not asserted as exact text: `RANDOM_REPLACE`, which is not reproducible at all.
+
+`MAP_REPLACE` is asserted exactly for the paths that are reproducible: a value
+present in the policy's inline lookup table is replaced by exactly that entry,
+and a value absent from it falls through to the configured `fallbackStrategy`.
+Only the generator fallback, which invokes a named generator for a value absent
+from the table, is not reproducible and must not be asserted as exact text.
 
 **Encrypting strategies are asserted by property instead.** Measured against
 phileas: `CRYPTO_REPLACE` produces different ciphertext on every call, even for

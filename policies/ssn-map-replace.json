@@ -1,0 +1,14 @@
+{
+  "name": "ssn-map-replace",
+  "identifiers": {
+    "ssn": {
+      "ssnFilterStrategies": [
+        {
+          "strategy": "MAP_REPLACE",
+          "mappings": { "123-45-6789": "AAA-AA-AAAA" },
+          "fallbackStrategy": "REDACT"
+        }
+      ]
+    }
+  }
+}

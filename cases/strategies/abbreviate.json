@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "policy": "policies/custom-dictionary-abbreviate.json",
+  "tags": [
+    "strategies",
+    "abbreviate",
+    "custom-dictionary"
+  ],
+  "cases": [
+    {
+      "id": "strategies/abbreviate-initials",
+      "text": "The Blue Harrier and Redwood programs are active.",
+      "expect": {
+        "spans": [
+          {
+            "start": 4,
+            "end": 16,
+            "type": "custom-dictionary",
+            "text": "Blue Harrier"
+          },
+          {
+            "start": 21,
+            "end": 28,
+            "type": "custom-dictionary",
+            "text": "Redwood"
+          }
+        ],
+        "filtered_text": "The BH and R programs are active."
+      },
+      "rationale": [
+        "ABBREVIATE reduces a detected value to the uppercase initials of its whitespace-separated words, so a two-word value yields two letters and a single-word value yields one.",
+        "Both forms appear in one document so the strategy is pinned for the multi-word and single-word cases together; an implementation that abbreviated only the first word would pass the second case alone.",
+        "The replacement is much shorter than the original, so this also pins that the surrounding text is reassembled at the right offsets."
+      ],
+      "since": "0.2.0"
+    }
+  ]
+}

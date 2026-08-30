@@ -1,0 +1,13 @@
+{
+  "name": "phone-number-region-gb-redact",
+  "identifiers": {
+    "phoneNumber": {
+      "region": "GB",
+      "phoneNumberFilterStrategies": [
+        {
+          "strategy": "REDACT"
+        }
+      ]
+    }
+  }
+}

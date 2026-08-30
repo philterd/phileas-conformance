@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "policy": "policies/ssn-map-replace.json",
+  "tags": [
+    "strategies",
+    "map-replace"
+  ],
+  "cases": [
+    {
+      "id": "strategies/map-replace-table-hit-and-fallback",
+      "text": "ssn 123-45-6789 and 555-55-1234.",
+      "expect": {
+        "spans": [
+          {
+            "start": 4,
+            "end": 15,
+            "type": "ssn",
+            "text": "123-45-6789"
+          },
+          {
+            "start": 20,
+            "end": 31,
+            "type": "ssn",
+            "text": "555-55-1234"
+          }
+        ],
+        "filtered_text": "ssn AAA-AA-AAAA and {{{REDACTED-ssn}}}."
+      },
+      "rationale": [
+        "MAP_REPLACE substitutes a detected value with its entry in the policy's inline lookup table, so a value present in the table is replaced by exactly that entry.",
+        "A value absent from the table falls through to the configured fallbackStrategy rather than being left in the clear. Both values are detected either way, so the fallback governs only the replacement text.",
+        "Both paths are asserted in one document because the interesting failure is a table miss silently emitting the original value."
+      ],
+      "since": "0.2.0"
+    }
+  ]
+}

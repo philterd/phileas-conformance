@@ -1,0 +1,13 @@
+{
+  "name": "custom-dictionary-abbreviate",
+  "identifiers": {
+    "dictionaries": [
+      {
+        "classification": "project-codename",
+        "terms": ["Blue Harrier", "Redwood"],
+        "fuzzy": false,
+        "customFilterStrategies": [ { "strategy": "ABBREVIATE" } ]
+      }
+    ]
+  }
+}

@@ -31,6 +31,45 @@
         "Every octet is out of range, so there is nothing to match."
       ],
       "since": "0.1.0"
+    },
+    {
+      "id": "ip-address/negative-trailing-octet-out-of-range",
+      "text": "ip 1.1.1.256",
+      "expect": {
+        "spans": [],
+        "filtered_text": "ip 1.1.1.256"
+      },
+      "rationale": [
+        "256 is not a valid octet, so the text is not an IP address and must produce no span, whichever position the invalid octet is in.",
+        "The companion case ip-address/negative-octet-out-of-range covers the leading position. This covers the trailing one, where an implementation that stops the last octet after two digits would report a valid-looking '1.1.1.25' and leave a stray '6' in the output."
+      ],
+      "since": "0.2.0"
+    },
+    {
+      "id": "ip-address/negative-digits-continue-past-last-octet",
+      "text": "version 10.0.0.19041",
+      "expect": {
+        "spans": [],
+        "filtered_text": "version 10.0.0.19041"
+      },
+      "rationale": [
+        "A dotted number whose final group runs to five digits is a build or version identifier, not an IP address, so it must produce no span.",
+        "The address must not end partway through a longer run of digits: reporting '10.0.0.190' here would redact part of a version string and leave the rest in the clear."
+      ],
+      "since": "0.2.0"
+    },
+    {
+      "id": "ip-address/negative-trailing-octet-three-digits",
+      "text": "ip 1.2.3.400",
+      "expect": {
+        "spans": [],
+        "filtered_text": "ip 1.2.3.400"
+      },
+      "rationale": [
+        "400 exceeds the 0 to 255 octet range, so there is no IP address here and no span may be produced.",
+        "Distinct from a value just past the boundary such as 256: 400 fails every octet alternative at its first two digits, so an implementation that matches greedily without a right-hand boundary reports '1.2.3.40'."
+      ],
+      "since": "0.2.0"
     }
   ]
 }
