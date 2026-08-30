@@ -29,6 +29,11 @@ tool, it gives you an independent body of detection cases with the reasoning for
 each one written down, which is otherwise tedious to assemble and easy to bias
 toward whatever your own tool already does.
 
+## What this repository is not
+
+This is not a corpus of medical, legal, or other industry data. It is a
+collection of synthetic PII created to test PII redaction systems.
+
 ## What is covered
 
 | Type | Detects |
