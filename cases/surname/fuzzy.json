@@ -59,6 +59,26 @@
       "since": "0.2.0"
     },
     {
+      "id": "surname/fuzzy-lowercase-exact-matches",
+      "text": "thrackmoor is lowercase",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 10,
+            "type": "surname",
+            "text": "thrackmoor"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-surname}}} is lowercase"
+      },
+      "rationale": [
+        "Term matching is case-insensitive, so a term the document writes in lowercase is still found when the policy writes it with a capital.",
+        "The span reports the text as it appears in the document, not the casing of the term that matched it. A span has to index its own text for offsets and text to stay usable together."
+      ],
+      "since": "0.2.0"
+    },
+    {
       "id": "surname/fuzzy-lowercase-near-miss-matches",
       "text": "thrackmoo is lowercase",
       "expect": {

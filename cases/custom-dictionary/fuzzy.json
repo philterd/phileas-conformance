@@ -27,6 +27,26 @@
       "since": "0.1.0"
     },
     {
+      "id": "custom-dictionary/fuzzy-uppercase-exact-matches",
+      "text": "BLUEBIRD exact",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 8,
+            "type": "custom-dictionary",
+            "text": "BLUEBIRD"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-custom-dictionary}}} exact"
+      },
+      "rationale": [
+        "Term matching is case-insensitive, so a term the document writes in uppercase is still found when the policy writes it in mixed case.",
+        "The span reports the text as it appears in the document, not the casing of the term that matched it. A span has to index its own text for offsets and text to stay usable together."
+      ],
+      "since": "0.2.0"
+    },
+    {
       "id": "custom-dictionary/fuzzy-single-deletion",
       "text": "Redwod is close enough",
       "expect": {

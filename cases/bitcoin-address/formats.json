@@ -78,8 +78,7 @@
         "filtered_text": "addr {{{REDACTED-bitcoin-address}}}"
       },
       "rationale": [
-        "bech32 has been the default address format in most wallets since 2017, so a Bitcoin filter that misses it misses most current addresses.",
-        "phileas detects only Base58 forms today. See philterd/phileas#338."
+        "bech32 has been the default address format in most wallets since 2017, so a Bitcoin filter that misses it misses most current addresses."
       ],
       "since": "0.1.0"
     }
