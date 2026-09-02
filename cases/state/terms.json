@@ -1,0 +1,80 @@
+{
+  "schema": 1,
+  "policy": "policies/state-terms-redact.json",
+  "tags": [
+    "dictionary",
+    "state"
+  ],
+  "cases": [
+    {
+      "id": "state/detection",
+      "text": "lives in Morvia now",
+      "expect": {
+        "spans": [
+          {
+            "start": 9,
+            "end": 15,
+            "type": "state",
+            "text": "Morvia"
+          }
+        ],
+        "filtered_text": "lives in {{{REDACTED-state}}} now"
+      },
+      "rationale": [
+        "A state name supplied by the policy. Distinct from the state-abbreviation filter, which matches two-letter codes."
+      ],
+      "since": "0.2.0"
+    },
+    {
+      "id": "state/multi-word-term",
+      "text": "lives in New Calanthe now",
+      "expect": {
+        "spans": [
+          {
+            "start": 9,
+            "end": 21,
+            "type": "state",
+            "text": "New Calanthe"
+          }
+        ],
+        "filtered_text": "lives in {{{REDACTED-state}}} now"
+      },
+      "rationale": [
+        "A term containing a space is matched as one term and produces one span across both words, not a span per word and not nothing at all."
+      ],
+      "since": "0.2.0"
+    },
+    {
+      "id": "state/multi-word-case-insensitive",
+      "text": "lives in new calanthe now",
+      "expect": {
+        "spans": [
+          {
+            "start": 9,
+            "end": 21,
+            "type": "state",
+            "text": "new calanthe"
+          }
+        ],
+        "filtered_text": "lives in {{{REDACTED-state}}} now"
+      },
+      "rationale": [
+        "Case insensitivity holds across a multi-word term, including the word after the space."
+      ],
+      "since": "0.2.0"
+    },
+    {
+      "id": "state/negative-bundled-term",
+      "text": "lives in Alabama now",
+      "expect": {
+        "spans": [],
+        "filtered_text": "lives in Alabama now"
+      },
+      "rationale": [
+        "'Alabama' is in the state list Phileas bundles and the policy does not supply it.",
+        "Terms given in the policy replace the bundled list rather than adding to it, so a name the policy does not list is not found. This is what makes the case portable: an implementation shipping a different word list gives the same answer."
+      ],
+      "since": "0.2.0"
+    }
+  ]
+}

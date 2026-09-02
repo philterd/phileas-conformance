@@ -1,0 +1,92 @@
+{
+  "schema": 1,
+  "policy": "policies/hospital-terms-redact.json",
+  "tags": [
+    "dictionary",
+    "hospital"
+  ],
+  "cases": [
+    {
+      "id": "hospital/multi-word-term",
+      "text": "seen at Kelbourne Regional Medical Center today",
+      "expect": {
+        "spans": [
+          {
+            "start": 8,
+            "end": 41,
+            "type": "hospital",
+            "text": "Kelbourne Regional Medical Center"
+          }
+        ],
+        "filtered_text": "seen at {{{REDACTED-hospital}}} today"
+      },
+      "rationale": [
+        "Hospital names are several words long, so a four-word term has to produce a single span covering all of it."
+      ],
+      "since": "0.2.0"
+    },
+    {
+      "id": "hospital/two-word-term",
+      "text": "seen at Ashfen General today",
+      "expect": {
+        "spans": [
+          {
+            "start": 8,
+            "end": 22,
+            "type": "hospital",
+            "text": "Ashfen General"
+          }
+        ],
+        "filtered_text": "seen at {{{REDACTED-hospital}}} today"
+      },
+      "rationale": [
+        "A shorter multi-word term, to show the span is driven by the term and not by a fixed window."
+      ],
+      "since": "0.2.0"
+    },
+    {
+      "id": "hospital/negative-partial-term",
+      "text": "seen at Ashfen today",
+      "expect": {
+        "spans": [],
+        "filtered_text": "seen at Ashfen today"
+      },
+      "rationale": [
+        "The first word of a multi-word term is not itself a term. Matching it would redact a word the policy never listed."
+      ],
+      "since": "0.2.0"
+    },
+    {
+      "id": "hospital/case-insensitive-multi-word",
+      "text": "seen at ashfen general today",
+      "expect": {
+        "spans": [
+          {
+            "start": 8,
+            "end": 22,
+            "type": "hospital",
+            "text": "ashfen general"
+          }
+        ],
+        "filtered_text": "seen at {{{REDACTED-hospital}}} today"
+      },
+      "rationale": [
+        "A multi-word term is matched case insensitively, like a single-word one."
+      ],
+      "since": "0.2.0"
+    },
+    {
+      "id": "hospital/negative-bundled-term",
+      "text": "seen at Mayo Clinic today",
+      "expect": {
+        "spans": [],
+        "filtered_text": "seen at Mayo Clinic today"
+      },
+      "rationale": [
+        "'Mayo Clinic' is in the hospital list Phileas bundles and the policy does not supply it.",
+        "Terms given in the policy replace the bundled list rather than adding to it, so a name the policy does not list is not found. This is what makes the case portable: an implementation shipping a different word list gives the same answer."
+      ],
+      "since": "0.2.0"
+    }
+  ]
+}

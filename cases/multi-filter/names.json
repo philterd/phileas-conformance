@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "policy": "policies/name-terms-both-redact.json",
+  "tags": [
+    "dictionary",
+    "multi-filter"
+  ],
+  "cases": [
+    {
+      "id": "multi-filter/first-name-and-surname",
+      "text": "Thrandia Thrackmoor was admitted",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 8,
+            "type": "first-name",
+            "text": "Thrandia"
+          },
+          {
+            "start": 9,
+            "end": 19,
+            "type": "surname",
+            "text": "Thrackmoor"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-first-name}}} {{{REDACTED-surname}}} was admitted"
+      },
+      "rationale": [
+        "Both name filters run over the same document and each finds its own term. The result is two spans of different types, not one span covering the full name."
+      ],
+      "since": "0.2.0"
+    },
+    {
+      "id": "multi-filter/negative-bundled-names",
+      "text": "the patient is Aaban Smith and he is stable",
+      "expect": {
+        "spans": [],
+        "filtered_text": "the patient is Aaban Smith and he is stable"
+      },
+      "rationale": [
+        "A first name and a surname that are both in the lists Phileas bundles, with a policy that supplies its own terms for each.",
+        "Neither is found. The two filters replace their bundled lists independently, so one of them falling back would show up here."
+      ],
+      "since": "0.2.0"
+    }
+  ]
+}

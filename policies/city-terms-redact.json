@@ -1,0 +1,10 @@
+{
+  "name": "city-terms-redact",
+  "identifiers": {
+    "city": {
+      "terms": ["Zzyzxville", "Morvaton"],
+      "fuzzy": false,
+      "cityFilterStrategies": [ { "strategy": "REDACT" } ]
+    }
+  }
+}

@@ -1,0 +1,76 @@
+{
+  "schema": 1,
+  "policy": "policies/surname-terms-fuzzy-capitalized.json",
+  "tags": [
+    "dictionary",
+    "surname",
+    "fuzzy"
+  ],
+  "cases": [
+    {
+      "id": "surname/capitalized-fuzzy-match",
+      "text": "Thrackmoo is capitalized",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 9,
+            "type": "surname",
+            "text": "Thrackmoo"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-surname}}} is capitalized"
+      },
+      "rationale": [
+        "With 'capitalized' set, a candidate has to start with a capital letter. This one does, and is a single deletion from a policy term, so it matches."
+      ],
+      "since": "0.2.0"
+    },
+    {
+      "id": "surname/capitalized-negative-lowercase",
+      "text": "thrackmoo is lowercase",
+      "expect": {
+        "spans": [],
+        "filtered_text": "thrackmoo is lowercase"
+      },
+      "rationale": [
+        "The same near miss in lowercase does not match. Requiring a capital is how a name filter avoids firing on ordinary prose, where a fuzzy threshold alone would.",
+        "Control: surname/fuzzy-lowercase-near-miss-matches is this text without the option."
+      ],
+      "since": "0.2.0"
+    },
+    {
+      "id": "surname/capitalized-exact-term",
+      "text": "Thrackmoor is capitalized",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 10,
+            "type": "surname",
+            "text": "Thrackmoor"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-surname}}} is capitalized"
+      },
+      "rationale": [
+        "A term written exactly, and capitalized, matches with the option on."
+      ],
+      "since": "0.2.0"
+    },
+    {
+      "id": "surname/capitalized-negative-lowercase-exact-term",
+      "text": "thrackmoor is lowercase",
+      "expect": {
+        "spans": [],
+        "filtered_text": "thrackmoor is lowercase"
+      },
+      "rationale": [
+        "An exact policy term in lowercase does not match when 'capitalized' is set.",
+        "This is the interaction worth pinning: without the option, matching ignores case, so the same document and the same term give a different answer depending on it.",
+        "An implementation applying the capital requirement only to inexact candidates would pass every other case in this file and fail this one."
+      ],
+      "since": "0.2.0"
+    }
+  ]
+}

@@ -8,13 +8,19 @@ Rules-based filters: regex, validator, and dictionaries whose terms are supplied
 inline in the policy. Out of scope:
 
 - **Model-backed filters** (PhEye), whose output moves with model versions.
-- **Filters backed by a bundled dictionary** (first name, surname, city, county,
-  state, hospital). A case like "Fayette is a county" asserts the contents of a
-  shipped word list, not filter behaviour, and each implementation ships its own.
-  Phileas makes this concrete: its test resources include fixture copies of
-  `surnames.txt` and friends that shadow the production lists, so the same policy
-  and input give different spans depending on the classpath. Custom dictionaries
-  are in scope precisely because the case carries its own terms.
+- **The contents of a bundled dictionary.** A case like "Fayette is a county"
+  asserts a word list shipped inside an implementation, not filter behaviour, and
+  each implementation ships its own. Phileas makes this concrete: its test
+  resources include fixture copies of `surnames.txt` and friends that shadow the
+  production lists, so the same policy and input give different spans depending
+  on the classpath.
+  The dictionary-backed filters themselves are in scope, on the same footing as a
+  custom dictionary, wherever the policy carries its own `terms`. The cases under
+  `cases/first-name/`, `cases/surname/`, `cases/city/`, `cases/county/`,
+  `cases/state/` and `cases/hospital/` supply their terms that way, and each of
+  those types also asserts that a term from the bundled list is left alone.
+  Their terms are invented rather than real names, so that a term cannot also be
+  sitting in the list an implementation bundles.
 - **Filters that exist in only one implementation** (physician name), which
   cannot be a parity claim.
 

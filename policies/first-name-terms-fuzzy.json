@@ -1,0 +1,12 @@
+{
+  "name": "first-name-terms-fuzzy",
+  "identifiers": {
+    "firstName": {
+      "terms": ["Thrandia", "Melisor", "Quorlan"],
+      "fuzzy": true,
+      "sensitivity": "medium",
+      "capitalized": false,
+      "firstNameFilterStrategies": [ { "strategy": "REDACT" } ]
+    }
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "policy": "policies/county-terms-redact.json",
+  "tags": [
+    "dictionary",
+    "county"
+  ],
+  "cases": [
+    {
+      "id": "county/detection",
+      "text": "filed in Vexbridge County",
+      "expect": {
+        "spans": [
+          {
+            "start": 9,
+            "end": 18,
+            "type": "county",
+            "text": "Vexbridge"
+          }
+        ],
+        "filtered_text": "filed in {{{REDACTED-county}}} County"
+      },
+      "rationale": [
+        "The term is the county name itself. The word 'County' after it is not part of the term and stays in the text, so the span must not be widened to cover it."
+      ],
+      "since": "0.2.0"
+    },
+    {
+      "id": "county/negative-bundled-term",
+      "text": "filed in Apache County",
+      "expect": {
+        "spans": [],
+        "filtered_text": "filed in Apache County"
+      },
+      "rationale": [
+        "'Apache' is in the county list Phileas bundles and the policy does not supply it.",
+        "Terms given in the policy replace the bundled list rather than adding to it, so a name the policy does not list is not found. This is what makes the case portable: an implementation shipping a different word list gives the same answer."
+      ],
+      "since": "0.2.0"
+    }
+  ]
+}

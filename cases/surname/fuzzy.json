@@ -1,0 +1,95 @@
+{
+  "schema": 1,
+  "policy": "policies/surname-terms-fuzzy.json",
+  "tags": [
+    "dictionary",
+    "surname",
+    "fuzzy"
+  ],
+  "cases": [
+    {
+      "id": "surname/fuzzy-exact-still-matches",
+      "text": "Thrackmoor exact still matches",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 10,
+            "type": "surname",
+            "text": "Thrackmoor"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-surname}}} exact still matches"
+      },
+      "rationale": [
+        "Enabling fuzzy matching must not stop exact terms matching."
+      ],
+      "since": "0.2.0"
+    },
+    {
+      "id": "surname/fuzzy-single-deletion",
+      "text": "Thrackmoo is close enough",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 9,
+            "type": "surname",
+            "text": "Thrackmoo"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-surname}}} is close enough"
+      },
+      "rationale": [
+        "A single deleted character matches at medium sensitivity."
+      ],
+      "since": "0.2.0"
+    },
+    {
+      "id": "surname/fuzzy-transposition-misses",
+      "text": "Vexlignham is a transposition",
+      "expect": {
+        "spans": [],
+        "filtered_text": "Vexlignham is a transposition"
+      },
+      "rationale": [
+        "A transposition does not match at medium sensitivity, even though a deletion does.",
+        "Pinned as current behaviour rather than as obviously correct: the edit-distance threshold and which edits count toward it are exactly what drifts between implementations, so the corpus has to state it explicitly."
+      ],
+      "since": "0.2.0"
+    },
+    {
+      "id": "surname/fuzzy-lowercase-near-miss-matches",
+      "text": "thrackmoo is lowercase",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 9,
+            "type": "surname",
+            "text": "thrackmoo"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-surname}}} is lowercase"
+      },
+      "rationale": [
+        "Fuzzy matching on its own does not require a capital: a lowercase near miss still matches.",
+        "This is the control for surname/capitalized-negative-lowercase, which is the same text under a policy differing only in 'capitalized'. Read the two together: they show that the option, and not something else, decides the answer."
+      ],
+      "since": "0.2.0"
+    },
+    {
+      "id": "surname/fuzzy-negative-bundled-term",
+      "text": "seen by Dr Smith on Tuesday",
+      "expect": {
+        "spans": [],
+        "filtered_text": "seen by Dr Smith on Tuesday"
+      },
+      "rationale": [
+        "Fuzzy matching widens what counts as a match, not where the terms come from.",
+        "Terms given in the policy replace the bundled list rather than adding to it, so a name the policy does not list is not found. This is what makes the case portable: an implementation shipping a different word list gives the same answer."
+      ],
+      "since": "0.2.0"
+    }
+  ]
+}

@@ -1,0 +1,98 @@
+{
+  "schema": 1,
+  "policy": "policies/first-name-terms-redact.json",
+  "tags": [
+    "dictionary",
+    "first-name"
+  ],
+  "cases": [
+    {
+      "id": "first-name/detection-mid-sentence",
+      "text": "the patient is Thrandia and she is stable",
+      "expect": {
+        "spans": [
+          {
+            "start": 15,
+            "end": 23,
+            "type": "first-name",
+            "text": "Thrandia"
+          }
+        ],
+        "filtered_text": "the patient is {{{REDACTED-first-name}}} and she is stable"
+      },
+      "rationale": [
+        "A first name mid-sentence. The names come from the policy, so the case asserts detection rather than the contents of a word list shipped inside an implementation."
+      ],
+      "since": "0.2.0"
+    },
+    {
+      "id": "first-name/two-terms-one-document",
+      "text": "Thrandia and Melisor both signed in",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 8,
+            "type": "first-name",
+            "text": "Thrandia"
+          },
+          {
+            "start": 13,
+            "end": 20,
+            "type": "first-name",
+            "text": "Melisor"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-first-name}}} and {{{REDACTED-first-name}}} both signed in"
+      },
+      "rationale": [
+        "Two names in one document must produce two spans, in order of appearance."
+      ],
+      "since": "0.2.0"
+    },
+    {
+      "id": "first-name/case-insensitive",
+      "text": "the patient is thrandia in lowercase",
+      "expect": {
+        "spans": [
+          {
+            "start": 15,
+            "end": 23,
+            "type": "first-name",
+            "text": "thrandia"
+          }
+        ],
+        "filtered_text": "the patient is {{{REDACTED-first-name}}} in lowercase"
+      },
+      "rationale": [
+        "A name is the same name however it is cased, so matching ignores case. Easy to get wrong when porting, because the underlying lookup is usually a set."
+      ],
+      "since": "0.2.0"
+    },
+    {
+      "id": "first-name/negative-bundled-term",
+      "text": "the patient is Aaban and he is stable",
+      "expect": {
+        "spans": [],
+        "filtered_text": "the patient is Aaban and he is stable"
+      },
+      "rationale": [
+        "'Aaban' is in the first name list Phileas bundles, in both the production copy and the fixture that shadows it on the test classpath. The policy does not supply it.",
+        "Terms given in the policy replace the bundled list rather than adding to it, so a name the policy does not list is not found. This is what makes the case portable: an implementation shipping a different word list gives the same answer."
+      ],
+      "since": "0.2.0"
+    },
+    {
+      "id": "first-name/negative-absent-term",
+      "text": "nothing to see here",
+      "expect": {
+        "spans": [],
+        "filtered_text": "nothing to see here"
+      },
+      "rationale": [
+        "A document holding no name from the policy produces no spans."
+      ],
+      "since": "0.2.0"
+    }
+  ]
+}

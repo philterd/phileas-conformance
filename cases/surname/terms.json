@@ -1,0 +1,194 @@
+{
+  "schema": 1,
+  "policy": "policies/surname-terms-redact.json",
+  "tags": [
+    "dictionary",
+    "surname"
+  ],
+  "cases": [
+    {
+      "id": "surname/detection-mid-sentence",
+      "text": "seen by Dr Thrackmoor on Tuesday",
+      "expect": {
+        "spans": [
+          {
+            "start": 11,
+            "end": 21,
+            "type": "surname",
+            "text": "Thrackmoor"
+          }
+        ],
+        "filtered_text": "seen by Dr {{{REDACTED-surname}}} on Tuesday"
+      },
+      "rationale": [
+        "A surname mid-sentence, from terms the policy supplies.",
+        "The terms are invented rather than real surnames on purpose. A real one risks sitting in the list an implementation bundles, which would let an implementation that ignored the policy terms pass this case anyway."
+      ],
+      "since": "0.2.0"
+    },
+    {
+      "id": "surname/two-terms-one-document",
+      "text": "Vexlingham and Drombisle co-signed",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 10,
+            "type": "surname",
+            "text": "Vexlingham"
+          },
+          {
+            "start": 15,
+            "end": 24,
+            "type": "surname",
+            "text": "Drombisle"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-surname}}} and {{{REDACTED-surname}}} co-signed"
+      },
+      "rationale": [
+        "Two surnames in one document must produce two spans, in order of appearance."
+      ],
+      "since": "0.2.0"
+    },
+    {
+      "id": "surname/case-insensitive-uppercase",
+      "text": "THRACKMOOR in capitals",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 10,
+            "type": "surname",
+            "text": "THRACKMOOR"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-surname}}} in capitals"
+      },
+      "rationale": [
+        "A surname in capitals is the same surname. Matching ignores case, and the span covers the whole token rather than stopping at the first letter."
+      ],
+      "since": "0.2.0"
+    },
+    {
+      "id": "surname/repeated-term",
+      "text": "Vexlingham, Drombisle, and Vexlingham again",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 10,
+            "type": "surname",
+            "text": "Vexlingham"
+          },
+          {
+            "start": 12,
+            "end": 21,
+            "type": "surname",
+            "text": "Drombisle"
+          },
+          {
+            "start": 27,
+            "end": 37,
+            "type": "surname",
+            "text": "Vexlingham"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-surname}}}, {{{REDACTED-surname}}}, and {{{REDACTED-surname}}} again"
+      },
+      "rationale": [
+        "The same surname twice in one document produces a span for each occurrence. An implementation that deduplicated by value would return two spans here and leave the third name in the output."
+      ],
+      "since": "0.2.0"
+    },
+    {
+      "id": "surname/trailing-period",
+      "text": "the report mentions Thrackmoor.",
+      "expect": {
+        "spans": [
+          {
+            "start": 20,
+            "end": 30,
+            "type": "surname",
+            "text": "Thrackmoor"
+          }
+        ],
+        "filtered_text": "the report mentions {{{REDACTED-surname}}}."
+      },
+      "rationale": [
+        "Sentence punctuation is not part of a name. The span ends at the last letter, so the period survives redaction."
+      ],
+      "since": "0.2.0"
+    },
+    {
+      "id": "surname/inside-parentheses",
+      "text": "(Vexlingham) in parentheses",
+      "expect": {
+        "spans": [
+          {
+            "start": 1,
+            "end": 11,
+            "type": "surname",
+            "text": "Vexlingham"
+          }
+        ],
+        "filtered_text": "({{{REDACTED-surname}}}) in parentheses"
+      },
+      "rationale": [
+        "Brackets around a name neither prevent the match nor get absorbed into the span."
+      ],
+      "since": "0.2.0"
+    },
+    {
+      "id": "surname/negative-bundled-term",
+      "text": "seen by Dr Smith on Tuesday",
+      "expect": {
+        "spans": [],
+        "filtered_text": "seen by Dr Smith on Tuesday"
+      },
+      "rationale": [
+        "'Smith' is in the surname list Phileas bundles, in both the production copy and the fixture that shadows it on the test classpath. The policy does not supply it.",
+        "Terms given in the policy replace the bundled list rather than adding to it, so a name the policy does not list is not found. This is what makes the case portable: an implementation shipping a different word list gives the same answer."
+      ],
+      "since": "0.2.0"
+    },
+    {
+      "id": "surname/negative-shadowed-fixture-words",
+      "text": "the date was from in the report",
+      "expect": {
+        "spans": [],
+        "filtered_text": "the date was from in the report"
+      },
+      "rationale": [
+        "'date', 'from' and 'in' are ordinary English words that appear in the surname fixture Phileas keeps under src/test/resources, which shadows the production list on the test classpath.",
+        "With the terms carried by the policy, common words cannot be redacted as surnames whatever an implementation bundles, or which copy of it a build happens to resolve. That ambiguity is why this type had no coverage before terms could be supplied from the policy."
+      ],
+      "since": "0.2.0"
+    },
+    {
+      "id": "surname/negative-longer-word",
+      "text": "Thrackmoors is a longer word",
+      "expect": {
+        "spans": [],
+        "filtered_text": "Thrackmoors is a longer word"
+      },
+      "rationale": [
+        "A term matches a whole token. 'Thrackmoors' contains 'Thrackmoor' but is a different word, so a substring match would be wrong here."
+      ],
+      "since": "0.2.0"
+    },
+    {
+      "id": "surname/negative-possessive",
+      "text": "Thrackmoor's chart was updated",
+      "expect": {
+        "spans": [],
+        "filtered_text": "Thrackmoor's chart was updated"
+      },
+      "rationale": [
+        "A possessive suffix prevents the match, so \"Thrackmoor's\" is not found even though 'Thrackmoor.' is.",
+        "Pinned as current behaviour rather than as obviously correct: a name in the possessive is still a name, and an implementation that redacted it would arguably be doing the better thing. What the corpus needs first is that the implementations agree, so the behaviour is written down here and can be changed deliberately."
+      ],
+      "since": "0.2.0"
+    }
+  ]
+}

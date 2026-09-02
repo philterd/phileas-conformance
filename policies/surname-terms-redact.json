@@ -1,0 +1,10 @@
+{
+  "name": "surname-terms-redact",
+  "identifiers": {
+    "surname": {
+      "terms": ["Thrackmoor", "Vexlingham", "Drombisle"],
+      "fuzzy": false,
+      "surnameFilterStrategies": [ { "strategy": "REDACT" } ]
+    }
+  }
+}

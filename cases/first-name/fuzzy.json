@@ -1,0 +1,62 @@
+{
+  "schema": 1,
+  "policy": "policies/first-name-terms-fuzzy.json",
+  "tags": [
+    "dictionary",
+    "first-name",
+    "fuzzy"
+  ],
+  "cases": [
+    {
+      "id": "first-name/fuzzy-exact-still-matches",
+      "text": "Thrandia exact",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 8,
+            "type": "first-name",
+            "text": "Thrandia"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-first-name}}} exact"
+      },
+      "rationale": [
+        "Enabling fuzzy matching must not stop exact terms matching."
+      ],
+      "since": "0.2.0"
+    },
+    {
+      "id": "first-name/fuzzy-single-deletion",
+      "text": "Thrandi is close enough",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 7,
+            "type": "first-name",
+            "text": "Thrandi"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-first-name}}} is close enough"
+      },
+      "rationale": [
+        "A single deleted character matches at medium sensitivity, which is the point of fuzzy matching on names: they are misspelled and transliterated constantly."
+      ],
+      "since": "0.2.0"
+    },
+    {
+      "id": "first-name/fuzzy-negative-bundled-term",
+      "text": "the patient is Aaban and he is stable",
+      "expect": {
+        "spans": [],
+        "filtered_text": "the patient is Aaban and he is stable"
+      },
+      "rationale": [
+        "Fuzzy matching widens what counts as a match, not where the terms come from.",
+        "Terms given in the policy replace the bundled list rather than adding to it, so a name the policy does not list is not found. This is what makes the case portable: an implementation shipping a different word list gives the same answer."
+      ],
+      "since": "0.2.0"
+    }
+  ]
+}

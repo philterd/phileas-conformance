@@ -1,0 +1,10 @@
+{
+  "name": "hospital-terms-redact",
+  "identifiers": {
+    "hospital": {
+      "terms": ["Kelbourne Regional Medical Center", "Ashfen General"],
+      "fuzzy": false,
+      "hospitalFilterStrategies": [ { "strategy": "REDACT" } ]
+    }
+  }
+}

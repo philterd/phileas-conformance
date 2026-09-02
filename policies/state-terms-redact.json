@@ -1,0 +1,10 @@
+{
+  "name": "state-terms-redact",
+  "identifiers": {
+    "state": {
+      "terms": ["Morvia", "New Calanthe"],
+      "fuzzy": false,
+      "stateFilterStrategies": [ { "strategy": "REDACT" } ]
+    }
+  }
+}

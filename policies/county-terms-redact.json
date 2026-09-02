@@ -1,0 +1,10 @@
+{
+  "name": "county-terms-redact",
+  "identifiers": {
+    "county": {
+      "terms": ["Vexbridge", "Harrowmere"],
+      "fuzzy": false,
+      "countyFilterStrategies": [ { "strategy": "REDACT" } ]
+    }
+  }
+}

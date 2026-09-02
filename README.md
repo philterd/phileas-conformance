@@ -41,6 +41,8 @@ collection of synthetic PII created to test PII redaction systems.
 | `age` | Ages in numeric, abbreviated and spelled-out forms, and as a labelled field |
 | `bank-routing-number` | US ABA routing numbers, checksum validated |
 | `bitcoin-address` | Base58 Bitcoin addresses |
+| `city` | Cities, from a term list supplied in the policy |
+| `county` | Counties, from a term list supplied in the policy |
 | `credit-card` | Card numbers for the major issuers, Luhn validated |
 | `currency` | Monetary amounts by symbol or ISO code, including non-US conventions |
 | `custom-dictionary` | Terms supplied inline in the policy, matched exactly or fuzzily |
@@ -48,6 +50,8 @@ collection of synthetic PII created to test PII redaction systems.
 | `drivers-license-number` | US driver's license numbers |
 | `ein` | US Employer Identification Numbers |
 | `email-address` | Email addresses, including the awkward but valid forms |
+| `first-name` | Given names, from a term list supplied in the policy, matched exactly or fuzzily |
+| `hospital` | Hospital names, including multi-word names, from a term list supplied in the policy |
 | `iban-code` | International Bank Account Numbers, spaced or unspaced |
 | `id` | Identifiers matching a regex supplied in the policy |
 | `ip-address` | IPv4 and IPv6 addresses |
@@ -57,8 +61,10 @@ collection of synthetic PII created to test PII redaction systems.
 | `phone-number-extension` | Extensions written on their own |
 | `section` | Everything between a start and end marker given in the policy |
 | `ssn` | US Social Security numbers, including invalid ranges that must not match |
+| `state` | Full state names, from a term list supplied in the policy |
 | `state-abbreviation` | Two-letter US state abbreviations |
 | `street-address` | US street addresses, with directionals and secondary units |
+| `surname` | Family names, from a term list supplied in the policy, exactly, fuzzily, or requiring a capital |
 | `tracking-number` | UPS, USPS and FedEx shipment tracking numbers |
 | `url` | URLs with and without a scheme, including IP and IPv6 hosts |
 | `vin` | Vehicle Identification Numbers, check digit validated |
@@ -67,6 +73,13 @@ collection of synthetic PII created to test PII redaction systems.
 Cases also cover behaviour that is not tied to one type: documents containing
 several types at once, policy conditions and ignore rules, replacement
 strategies, and encrypting strategies asserted by property.
+
+The dictionary-backed types (first name, surname, city, county, state, hospital)
+are covered only where the policy supplies its own `terms`. No case depends on
+the word list an implementation bundles, because those lists differ between
+implementations and a case asserting one would be asserting a shipped file
+rather than detection. Each of those types also carries a case putting a term
+from the bundled list in the text and asserting it is left alone.
 
 ## Using it with other tools
 

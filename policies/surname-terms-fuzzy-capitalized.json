@@ -1,0 +1,12 @@
+{
+  "name": "surname-terms-fuzzy-capitalized",
+  "identifiers": {
+    "surname": {
+      "terms": ["Thrackmoor", "Vexlingham", "Drombisle"],
+      "fuzzy": true,
+      "sensitivity": "medium",
+      "capitalized": true,
+      "surnameFilterStrategies": [ { "strategy": "REDACT" } ]
+    }
+  }
+}

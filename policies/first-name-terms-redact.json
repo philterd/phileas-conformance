@@ -1,0 +1,10 @@
+{
+  "name": "first-name-terms-redact",
+  "identifiers": {
+    "firstName": {
+      "terms": ["Thrandia", "Melisor", "Quorlan"],
+      "fuzzy": false,
+      "firstNameFilterStrategies": [ { "strategy": "REDACT" } ]
+    }
+  }
+}

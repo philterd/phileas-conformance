@@ -1,0 +1,15 @@
+{
+  "name": "name-terms-both-redact",
+  "identifiers": {
+    "firstName": {
+      "terms": ["Thrandia", "Melisor", "Quorlan"],
+      "fuzzy": false,
+      "firstNameFilterStrategies": [ { "strategy": "REDACT" } ]
+    },
+    "surname": {
+      "terms": ["Thrackmoor", "Vexlingham", "Drombisle"],
+      "fuzzy": false,
+      "surnameFilterStrategies": [ { "strategy": "REDACT" } ]
+    }
+  }
+}

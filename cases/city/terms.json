@@ -1,0 +1,61 @@
+{
+  "schema": 1,
+  "policy": "policies/city-terms-redact.json",
+  "tags": [
+    "dictionary",
+    "city"
+  ],
+  "cases": [
+    {
+      "id": "city/detection",
+      "text": "the clinic is in Zzyzxville today",
+      "expect": {
+        "spans": [
+          {
+            "start": 17,
+            "end": 27,
+            "type": "city",
+            "text": "Zzyzxville"
+          }
+        ],
+        "filtered_text": "the clinic is in {{{REDACTED-city}}} today"
+      },
+      "rationale": [
+        "A city name supplied by the policy, found mid-sentence."
+      ],
+      "since": "0.2.0"
+    },
+    {
+      "id": "city/second-term",
+      "text": "the clinic is in Morvaton today",
+      "expect": {
+        "spans": [
+          {
+            "start": 17,
+            "end": 25,
+            "type": "city",
+            "text": "Morvaton"
+          }
+        ],
+        "filtered_text": "the clinic is in {{{REDACTED-city}}} today"
+      },
+      "rationale": [
+        "Every term in the policy is matched, not only the first."
+      ],
+      "since": "0.2.0"
+    },
+    {
+      "id": "city/negative-bundled-term",
+      "text": "the clinic is in Abbeville today",
+      "expect": {
+        "spans": [],
+        "filtered_text": "the clinic is in Abbeville today"
+      },
+      "rationale": [
+        "'Abbeville' is in the city list Phileas bundles and the policy does not supply it.",
+        "Terms given in the policy replace the bundled list rather than adding to it, so a name the policy does not list is not found. This is what makes the case portable: an implementation shipping a different word list gives the same answer."
+      ],
+      "since": "0.2.0"
+    }
+  ]
+}
