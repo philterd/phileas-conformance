@@ -1,0 +1,8 @@
+{
+  "name": "ssn-no-strategies",
+  "identifiers": {
+    "ssn": {
+      "ssnFilterStrategies": []
+    }
+  }
+}

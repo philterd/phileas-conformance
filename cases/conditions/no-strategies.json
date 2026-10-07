@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "policy": "policies/ssn-no-strategies.json",
+  "tags": [
+    "conditions",
+    "policy"
+  ],
+  "cases": [
+    {
+      "id": "conditions/no-strategies-default-redact",
+      "text": "ssn 123-45-6789 and 555-55-1234",
+      "expect": {
+        "spans": [
+          {
+            "start": 4,
+            "end": 15,
+            "type": "ssn",
+            "text": "123-45-6789"
+          },
+          {
+            "start": 20,
+            "end": 31,
+            "type": "ssn",
+            "text": "555-55-1234"
+          }
+        ],
+        "filtered_text": "ssn {{{REDACTED-ssn}}} and {{{REDACTED-ssn}}}"
+      },
+      "rationale": [
+        "A filter with an empty strategy list has no condition to fail, so every value takes the default redaction.",
+        "Together with the all-conditional cases this separates the two situations philterd/phisql#57 distinguishes: no strategies redacts, strategies that are all unsatisfied leave the value unchanged."
+      ],
+      "since": "0.2.0"
+    }
+  ]
+}

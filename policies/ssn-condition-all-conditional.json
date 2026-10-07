@@ -1,0 +1,14 @@
+{
+  "name": "ssn-condition-all-conditional",
+  "identifiers": {
+    "ssn": {
+      "ssnFilterStrategies": [
+        {
+          "strategy": "STATIC_REPLACE",
+          "staticReplacement": "MATCHED",
+          "condition": "token == \"555-55-1234\""
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "policy": "policies/ssn-condition-all-conditional.json",
+  "tags": [
+    "conditions",
+    "policy"
+  ],
+  "cases": [
+    {
+      "id": "conditions/all-conditional-none-match",
+      "text": "ssn 123-45-6789",
+      "expect": {
+        "spans": [],
+        "filtered_text": "ssn 123-45-6789"
+      },
+      "rationale": [
+        "Every strategy on the filter carries a condition and none is satisfied, so the value is left unchanged. This is the rule decided in philterd/phisql#57.",
+        "The unchanged value is not in the applied span list, the same convention as a span suppressed by an ignore rule.",
+        "Leaving it unchanged is what lets a condition narrow a strategy, such as TRUNCATE_TO_YEAR only where the token is a birthdate. A policy that must transform every detected value ends with an unconditional strategy."
+      ],
+      "since": "0.2.0"
+    },
+    {
+      "id": "conditions/all-conditional-some-match",
+      "text": "ssn 123-45-6789 and 555-55-1234",
+      "expect": {
+        "spans": [
+          {
+            "start": 20,
+            "end": 31,
+            "type": "ssn",
+            "text": "555-55-1234"
+          }
+        ],
+        "filtered_text": "ssn 123-45-6789 and MATCHED"
+      },
+      "rationale": [
+        "The value that satisfies the condition takes its strategy; the value that satisfies none is left unchanged and is not an applied span (philterd/phisql#57).",
+        "Pins that the unchanged value does not fall back to the default redaction, as it would for a filter with no strategies at all."
+      ],
+      "since": "0.2.0"
+    }
+  ]
+}
