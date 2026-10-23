@@ -8,22 +8,35 @@
   "cases": [
     {
       "id": "drivers-license-number/all-digits",
-      "text": "the number is 123456789.",
+      "text": "the license number is 123456789.",
       "expect": {
         "spans": [
           {
-            "start": 14,
-            "end": 23,
+            "start": 22,
+            "end": 31,
             "type": "drivers-license-number",
             "text": "123456789"
           }
         ],
-        "filtered_text": "the number is {{{REDACTED-drivers-license-number}}}."
+        "filtered_text": "the license number is {{{REDACTED-drivers-license-number}}}."
       },
       "rationale": [
-        "A nine-digit licence number."
+        "A nine-digit licence number, identified by the word 'license' near it.",
+        "A run of digits alone has the shape of many numbers that are not licences, so the contextual term is what makes it one."
       ],
       "since": "0.1.0"
+    },
+    {
+      "id": "drivers-license-number/all-digits-without-context",
+      "text": "the number is 123456789.",
+      "expect": {
+        "spans": [],
+        "filtered_text": "the number is 123456789."
+      },
+      "rationale": [
+        "Nine digits with no word nearby saying it is a licence. Several states use this shape, but so do account, order, and reference numbers, so it is not reported as a licence."
+      ],
+      "since": "0.2.0"
     },
     {
       "id": "drivers-license-number/letter-prefixed",
@@ -43,6 +56,68 @@
         "A letter followed by digits, the format several states use."
       ],
       "since": "0.1.0"
+    },
+    {
+      "id": "drivers-license-number/negative-house-number-and-zip",
+      "text": "Address: 1234 Oak Street, Austin, TX 78701.",
+      "expect": {
+        "spans": [],
+        "filtered_text": "Address: 1234 Oak Street, Austin, TX 78701."
+      },
+      "rationale": [
+        "A house number and a ZIP code are runs of digits within the lengths states use, but nothing marks either as a licence."
+      ],
+      "since": "0.2.0"
+    },
+    {
+      "id": "drivers-license-number/negative-amount",
+      "text": "The visit lasted 45 minutes and cost 2500 dollars.",
+      "expect": {
+        "spans": [],
+        "filtered_text": "The visit lasted 45 minutes and cost 2500 dollars."
+      },
+      "rationale": [
+        "An amount is a run of digits, not a licence."
+      ],
+      "since": "0.2.0"
+    },
+    {
+      "id": "drivers-license-number/all-digits-after-label",
+      "text": "Driver's license 12345678 on file.",
+      "expect": {
+        "spans": [
+          {
+            "start": 17,
+            "end": 25,
+            "type": "drivers-license-number",
+            "text": "12345678"
+          }
+        ],
+        "filtered_text": "Driver's license {{{REDACTED-drivers-license-number}}} on file."
+      },
+      "rationale": [
+        "Eight digits after the label \"Driver's license\" are a licence number."
+      ],
+      "since": "0.2.0"
+    },
+    {
+      "id": "drivers-license-number/letter-prefixed-short",
+      "text": "License D1234567 on file.",
+      "expect": {
+        "spans": [
+          {
+            "start": 8,
+            "end": 16,
+            "type": "drivers-license-number",
+            "text": "D1234567"
+          }
+        ],
+        "filtered_text": "License {{{REDACTED-drivers-license-number}}} on file."
+      },
+      "rationale": [
+        "A letter followed by seven digits, the California format. The letter sets it apart from an ordinary number, so it needs no contextual term."
+      ],
+      "since": "0.2.0"
     }
   ]
 }
