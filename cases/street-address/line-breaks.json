@@ -1,0 +1,97 @@
+{
+  "schema": 1,
+  "policy": "policies/street-address-redact.json",
+  "tags": [
+    "regex",
+    "street-address",
+    "multiline"
+  ],
+  "cases": [
+    {
+      "id": "street-address/line-break-after-street",
+      "text": "Address: 214 Juniper Court, Cedar Falls, IA 50613\n\nDear Dr. Rivera,",
+      "expect": {
+        "spans": [
+          {
+            "start": 9,
+            "end": 26,
+            "type": "street-address",
+            "text": "214 Juniper Court"
+          }
+        ],
+        "filtered_text": "Address: {{{REDACTED-street-address}}}, Cedar Falls, IA 50613\n\nDear Dr. Rivera,"
+      },
+      "rationale": [
+        "The address is on one line. The ZIP code at the end of it and 'Dear Dr.' at the start of the letter are not a house number and street type, so the match does not run across the blank line."
+      ],
+      "since": "0.2.0"
+    },
+    {
+      "id": "street-address/line-break-zip-then-salutation",
+      "text": "Cedar Falls, IA 50613\nDear Dr. Rivera,",
+      "expect": {
+        "spans": [],
+        "filtered_text": "Cedar Falls, IA 50613\nDear Dr. Rivera,"
+      },
+      "rationale": [
+        "A ZIP code ending one line and 'Dear Dr.' starting the next are unrelated text, not a house number, a street name, and the street type 'Dr'."
+      ],
+      "since": "0.2.0"
+    },
+    {
+      "id": "street-address/line-break-crlf",
+      "text": "Cedar Falls, IA 50613\r\nDear Dr. Rivera,",
+      "expect": {
+        "spans": [],
+        "filtered_text": "Cedar Falls, IA 50613\r\nDear Dr. Rivera,"
+      },
+      "rationale": [
+        "A Windows line ending (\r\n) separates the lines the same way \n does."
+      ],
+      "since": "0.2.0"
+    },
+    {
+      "id": "street-address/line-break-between-street-and-city",
+      "text": "214 Juniper Court\nCedar Falls, IA 50613",
+      "expect": {
+        "spans": [
+          {
+            "start": 0,
+            "end": 17,
+            "type": "street-address",
+            "text": "214 Juniper Court"
+          }
+        ],
+        "filtered_text": "{{{REDACTED-street-address}}}\nCedar Falls, IA 50613"
+      },
+      "rationale": [
+        "An address block: the street line matches on its own and the city line is not joined to it."
+      ],
+      "since": "0.2.0"
+    },
+    {
+      "id": "street-address/line-break-po-box-number",
+      "text": "P.O. Box\n12",
+      "expect": {
+        "spans": [],
+        "filtered_text": "P.O. Box\n12"
+      },
+      "rationale": [
+        "A PO box and its number are written on one line. A number on the next line is not part of the box."
+      ],
+      "since": "0.2.0"
+    },
+    {
+      "id": "street-address/line-break-post-office-box",
+      "text": "Post Office\nBox 789",
+      "expect": {
+        "spans": [],
+        "filtered_text": "Post Office\nBox 789"
+      },
+      "rationale": [
+        "'Post Office Box' is matched only when written on one line."
+      ],
+      "since": "0.2.0"
+    }
+  ]
+}
